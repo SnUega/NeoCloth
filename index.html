@@ -1,0 +1,603 @@
+<!DOCTYPE html>
+<html lang="en" data-lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title data-i18n="meta.title">Oversize Clothing - Your Unique Style</title>
+    <meta name="description" data-i18n="meta.description" content="Premium oversize clothing: clean designs, exclusive prints, and custom art. Choose your style without compromise.">
+    
+    <!-- Preload critical resources -->
+    <link rel="preload" href="assets/css/styles.css" as="style">
+    <link rel="preload" href="assets/js/main.js" as="script">
+    
+    <!-- Stylesheets -->
+    <link rel="stylesheet" href="assets/css/styles.css">
+    
+    <!-- Fallback styles for when JavaScript fails -->
+    <style>
+        /* Ensure content is visible even without JavaScript */
+        .loading-spinner {
+            display: none !important;
+        }
+        
+        body {
+            display: block !important;
+        }
+        
+        /* Fallback for mobile menu */
+        @media (max-width: 768px) {
+            .nav-menu {
+                display: none;
+            }
+            .nav-menu.active {
+                display: flex;
+                flex-direction: column;
+                position: absolute;
+                top: 100%;
+                left: 0;
+                right: 0;
+                background: white;
+                padding: 1rem;
+                box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            }
+        }
+    </style>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <!-- Loading Spinner -->
+    <div id="loading-spinner" class="loading-spinner">
+        <div class="spinner"></div>
+        <p data-i18n="loading">Loading...</p>
+    </div>
+    
+    <!-- NoScript fallback -->
+    <noscript>
+        <div style="background: #f8f9fa; padding: 2rem; text-align: center; border-bottom: 1px solid #dee2e6;">
+            <p style="margin: 0; color: #666;">
+                <strong>JavaScript is disabled.</strong> Some features may not work properly.
+            </p>
+        </div>
+    </noscript>
+
+    <!-- Navigation -->
+    <nav class="navbar" id="navbar">
+        <div class="nav-container">
+            <div class="nav-logo">
+                <h2 data-i18n="brand.name">OVERSIZE</h2>
+            </div>
+            
+            <div class="nav-menu">
+                <a href="#hero" data-i18n="nav.home">Home</a>
+                <a href="#catalogs" data-i18n="nav.catalog">Catalog</a>
+                <a href="#about" data-i18n="nav.about">About</a>
+                <a href="#reviews" data-i18n="nav.reviews">Reviews</a>
+                <a href="#contact" data-i18n="nav.contact">Contact</a>
+            </div>
+
+            <div class="nav-actions">
+                <!-- Language Switcher -->
+                <div class="language-switcher">
+                    <button class="lang-btn active" data-lang="en">EN</button>
+                    <button class="lang-btn" data-lang="ro">RO</button>
+                    <button class="lang-btn" data-lang="ru">RU</button>
+                </div>
+                
+                <!-- Cart -->
+                <div class="cart-icon" id="cart-icon">
+                    <i class="fas fa-shopping-cart"></i>
+                    <span class="cart-count" id="cart-count">0</span>
+                </div>
+                
+                <!-- Mobile menu toggle -->
+                <button class="mobile-menu-toggle" id="mobile-menu-toggle" aria-label="Toggle mobile menu">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section id="hero" class="hero">
+        <div class="container">
+            <div class="hero-content">
+                <h1 data-i18n="hero.title">The Peak of Comfort and Self-Expression</h1>
+                <p data-i18n="hero.subtitle">From anonymous elegance of No Logo to exclusive prints by artists. Choose your format of freedom.</p>
+                <div class="hero-cta">
+                    <button class="btn btn-primary" onclick="scrollToSection('catalogs')" data-i18n="hero.cta">Create Your Look</button>
+                    <button class="btn btn-secondary" onclick="scrollToSection('about')" data-i18n="hero.learn_more">Learn More</button>
+                </div>
+            </div>
+            <div class="hero-image">
+                <!-- Hero image -->
+                <img src="assets/images/hero-image.webp" alt="Oversize Clothing Hero Image" class="hero-img">
+            </div>
+        </div>
+    </section>
+
+    <!-- Problem Section -->
+    <section id="problem" class="problem-section">
+        <div class="container">
+            <h2 data-i18n="problem.title">Tired of Ordinary?</h2>
+            <p data-i18n="problem.description">Clothes that fit like a bag? Prints that everyone has? It's time to change that. Massive, shapeless oversize that hides you instead of highlighting your individuality? We know this pain. Our solution is not just a thing, but your future favorite wardrobe item.</p>
+        </div>
+    </section>
+
+    <!-- Solution Section -->
+    <section id="solution" class="solution-section">
+        <div class="container">
+            <h2 data-i18n="solution.title">Three Paths to the Perfect Item</h2>
+            <p data-i18n="solution.subtitle">Choose your unique path. No compromises.</p>
+            
+            <div class="solution-grid">
+                <div class="solution-card">
+                    <div class="solution-icon">
+                        <i class="fas fa-check"></i>
+                    </div>
+                    <h3 data-i18n="solution.no_logo.title">No Logo</h3>
+                    <p data-i18n="solution.no_logo.description">For connoisseurs of silence aesthetics. Absolute purity, perfect cut and top materials. Your basic level - with a "premium" prefix.</p>
+                </div>
+                
+                <div class="solution-card">
+                    <div class="solution-icon">
+                        <i class="fas fa-palette"></i>
+                    </div>
+                    <h3 data-i18n="solution.ready_to_wear.title">Ready-To-Wear</h3>
+                    <p data-i18n="solution.ready_to_wear.description">Ready solutions for bright personalities. Limited print collections from our artists. You'll have a stylish thing, but not yet exclusive.</p>
+                </div>
+                
+                <div class="solution-card">
+                    <div class="solution-icon">
+                        <i class="fas fa-paintbrush"></i>
+                    </div>
+                    <h3 data-i18n="solution.custom_art.title">Custom Art</h3>
+                    <p data-i18n="solution.custom_art.description">You are the artist, and we are your canvas. The only print in the world according to your sketch or idea. Full control from concept to implementation.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Catalogs Section -->
+    <section id="catalogs" class="catalogs-section">
+        <div class="container">
+            <h2 data-i18n="catalogs.title">Our Collections</h2>
+            
+            <!-- No Logo Catalog -->
+            <div class="catalog-section" id="no-logo-catalog">
+                <div class="catalog-header">
+                    <h3 data-i18n="catalog.no_logo.title">No Logo. Power in Details.</h3>
+                    <p data-i18n="catalog.no_logo.description">When the absence of print is the main statement. Focus on fabric quality, perfect cut and tactile sensations.</p>
+                </div>
+                
+                <div class="catalog-benefits">
+                    <div class="benefit">
+                        <h4 data-i18n="catalog.no_logo.benefit1.title">Perfect Cut</h4>
+                        <p data-i18n="catalog.no_logo.benefit1.description">Designed specifically for oversize wear. Sits voluminously, but not baggy.</p>
+                    </div>
+                    <div class="benefit">
+                        <h4 data-i18n="catalog.no_logo.benefit2.title">Premium Fabric</h4>
+                        <p data-i18n="catalog.no_logo.benefit2.description">Dense, soft cotton that doesn't lose shape after dozens of washes.</p>
+                    </div>
+                    <div class="benefit">
+                        <h4 data-i18n="catalog.no_logo.benefit3.title">Versatility</h4>
+                        <p data-i18n="catalog.no_logo.benefit3.description">Base for any look. Wear under a jacket, with jeans or sweatpants.</p>
+                    </div>
+                </div>
+                
+                <div class="products-grid" id="no-logo-products">
+                    <!-- Products will be loaded from Google Sheets -->
+                </div>
+            </div>
+
+            <!-- Ready-to-Wear Catalog -->
+            <div class="catalog-section" id="ready-to-wear-catalog">
+                <div class="catalog-header">
+                    <h3 data-i18n="catalog.ready_to_wear.title">Ready-To-Wear. Wear Art.</h3>
+                    <p data-i18n="catalog.ready_to_wear.description">Ready prints that we selected for you. Each collection is limited and created by streetwear artists.</p>
+                </div>
+                
+                <div class="catalog-benefits">
+                    <div class="benefit">
+                        <h4 data-i18n="catalog.ready_to_wear.benefit1.title">Platform Exclusivity</h4>
+                        <p data-i18n="catalog.ready_to_wear.benefit1.description">These prints can't be bought anywhere else.</p>
+                    </div>
+                    <div class="benefit">
+                        <h4 data-i18n="catalog.ready_to_wear.benefit2.title">Work with Artists</h4>
+                        <p data-i18n="catalog.ready_to_wear.benefit2.description">We collaborate with talented designers, not using stock images.</p>
+                    </div>
+                    <div class="benefit">
+                        <h4 data-i18n="catalog.ready_to_wear.benefit3.title">Collection Changes</h4>
+                        <p data-i18n="catalog.ready_to_wear.benefit3.description">New prints every 2 months. Catch yours in time.</p>
+                    </div>
+                </div>
+                
+                <div class="products-grid" id="ready-to-wear-products">
+                    <!-- Products will be loaded from Google Sheets -->
+                </div>
+            </div>
+
+            <!-- Custom Art Catalog -->
+            <div class="catalog-section" id="custom-art-catalog">
+                <div class="catalog-header">
+                    <h3 data-i18n="catalog.custom_art.title">Custom Art. Your World, Your Print.</h3>
+                    <p data-i18n="catalog.custom_art.description">Turn your idea into a unique item. Full immersion in the creation process with our artist.</p>
+                </div>
+                
+                <div class="catalog-benefits">
+                    <div class="benefit">
+                        <h4 data-i18n="catalog.custom_art.benefit1.title">1 on 1</h4>
+                        <p data-i18n="catalog.custom_art.benefit1.description">Personal communication with the artist. Discuss sketches, make edits, be a co-author.</p>
+                    </div>
+                    <div class="benefit">
+                        <h4 data-i18n="catalog.custom_art.benefit2.title">No Limitations</h4>
+                        <p data-i18n="catalog.custom_art.benefit2.description">Abstraction, portrait, inscription, geometry - any of your ideas has the right to life.</p>
+                    </div>
+                    <div class="benefit">
+                        <h4 data-i18n="catalog.custom_art.benefit3.title">100% Exclusive</h4>
+                        <p data-i18n="catalog.custom_art.benefit3.description">We delete layouts after printing. This print will remain only with you.</p>
+                    </div>
+                </div>
+                
+                <div class="custom-process">
+                    <h4 data-i18n="catalog.custom_art.process.title">Process</h4>
+                    <div class="process-steps">
+                        <div class="process-step">
+                            <div class="step-number">1</div>
+                            <h5 data-i18n="catalog.custom_art.process.step1.title">Application</h5>
+                            <p data-i18n="catalog.custom_art.process.step1.description">You leave an order and describe the idea.</p>
+                        </div>
+                        <div class="process-step">
+                            <div class="step-number">2</div>
+                            <h5 data-i18n="catalog.custom_art.process.step2.title">Sketch</h5>
+                            <p data-i18n="catalog.custom_art.process.step2.description">Our artist contacts you and draws the first sketches.</p>
+                        </div>
+                        <div class="process-step">
+                            <div class="step-number">3</div>
+                            <h5 data-i18n="catalog.custom_art.process.step3.title">Implementation</h5>
+                            <p data-i18n="catalog.custom_art.process.step3.description">You approve the layout and get the finished item in 7-10 days.</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="custom-cta">
+                    <button class="btn btn-primary" onclick="openCustomForm()" data-i18n="catalog.custom_art.cta">Discuss Your Project</button>
+                </div>
+                
+                <div class="products-grid" id="custom-art-products">
+                    <!-- Custom art products will be loaded from Google Sheets -->
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- About Section -->
+    <section id="about" class="about-section">
+        <div class="container">
+            <h2 data-i18n="about.title">Why Choose Us?</h2>
+            <p data-i18n="about.subtitle">You can trust us. 100%.</p>
+            
+            <div class="about-grid">
+                <div class="about-card">
+                    <div class="about-icon">
+                        <i class="fas fa-award"></i>
+                    </div>
+                    <h3 data-i18n="about.quality.title">Print Quality</h3>
+                    <p data-i18n="about.quality.description">Durable, doesn't crack or stick after washing. Guaranteed for 50+ washes.</p>
+                </div>
+                
+                <div class="about-card">
+                    <div class="about-icon">
+                        <i class="fas fa-shipping-fast"></i>
+                    </div>
+                    <h3 data-i18n="about.delivery.title">Delivery</h3>
+                    <p data-i18n="about.delivery.description">Fast shipping and order tracking. We deliver across CIS in 3-7 days.</p>
+                </div>
+                
+                <div class="about-card">
+                    <div class="about-icon">
+                        <i class="fas fa-undo"></i>
+                    </div>
+                    <h3 data-i18n="about.fitting.title">Fitting</h3>
+                    <p data-i18n="about.fitting.description">Doesn't fit? Easy return and exchange within 14 days.</p>
+                </div>
+                
+                <div class="about-card">
+                    <div class="about-icon">
+                        <i class="fas fa-headset"></i>
+                    </div>
+                    <h3 data-i18n="about.support.title">Support</h3>
+                    <p data-i18n="about.support.description">Our team is in touch to help with selection and answer questions.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Reviews Section -->
+    <section id="reviews" class="reviews-section">
+        <div class="container">
+            <h2 data-i18n="reviews.title">They Choose Us. And You?</h2>
+            
+            <div class="reviews-grid">
+                <div class="review-card">
+                    <div class="review-image">
+                        <div class="review-placeholder">
+                            <i class="fas fa-user"></i>
+                        </div>
+                    </div>
+                    <div class="review-content">
+                        <div class="review-stars">★★★★★</div>
+                        <p data-i18n="reviews.review1.text">"I was looking for the perfect basic hoodie without anything. This is it! The fabric is fire, sat perfectly."</p>
+                        <div class="review-author" data-i18n="reviews.review1.author">Maria K.</div>
+                        <div class="review-category" data-i18n="reviews.review1.category">No Logo</div>
+                    </div>
+                </div>
+                
+                <div class="review-card">
+                    <div class="review-image">
+                        <div class="review-placeholder">
+                            <i class="fas fa-user"></i>
+                        </div>
+                    </div>
+                    <div class="review-content">
+                        <div class="review-stars">★★★★★</div>
+                        <p data-i18n="reviews.review2.text">"Everyone asks where I bought it. It's nice to realize that such a print is only with me and a couple of dozen people."</p>
+                        <div class="review-author" data-i18n="reviews.review2.author">Alex M.</div>
+                        <div class="review-category" data-i18n="reviews.review2.category">Ready-to-Wear</div>
+                    </div>
+                </div>
+                
+                <div class="review-card">
+                    <div class="review-image">
+                        <div class="review-placeholder">
+                            <i class="fas fa-user"></i>
+                        </div>
+                    </div>
+                    <div class="review-content">
+                        <div class="review-stars">★★★★★</div>
+                        <p data-i18n="reviews.review3.text">"They realized my crazy idea with a cat in a spacesuit. The artist is a genius! We communicated on Telegram, everything was fast and clear."</p>
+                        <div class="review-author" data-i18n="reviews.review3.author">Denis P.</div>
+                        <div class="review-category" data-i18n="reviews.review3.category">Custom Art</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FAQ Section -->
+    <section id="faq" class="faq-section">
+        <div class="container">
+            <h2 data-i18n="faq.title">Have Questions? We Have Answers.</h2>
+            
+            <div class="faq-list">
+                <div class="faq-item">
+                    <button class="faq-question" onclick="toggleFaq(this)">
+                        <span data-i18n="faq.q1.question">How to choose the right size?</span>
+                        <i class="fas fa-chevron-down"></i>
+                    </button>
+                    <div class="faq-answer">
+                        <p data-i18n="faq.q1.answer">We have a detailed size chart. Our oversize is designed to sit freely but not baggy. If you're between sizes, choose the larger one.</p>
+                    </div>
+                </div>
+                
+                <div class="faq-item">
+                    <button class="faq-question" onclick="toggleFaq(this)">
+                        <span data-i18n="faq.q2.question">How long does a Custom Art order take?</span>
+                        <i class="fas fa-chevron-down"></i>
+                    </button>
+                    <div class="faq-answer">
+                        <p data-i18n="faq.q2.answer">Custom orders take 7-10 business days from sketch approval to shipping. The design process usually takes 2-3 days.</p>
+                    </div>
+                </div>
+                
+                <div class="faq-item">
+                    <button class="faq-question" onclick="toggleFaq(this)">
+                        <span data-i18n="faq.q3.question">How does payment work?</span>
+                        <i class="fas fa-chevron-down"></i>
+                    </button>
+                    <div class="faq-answer">
+                        <p data-i18n="faq.q3.answer">We accept all major payment methods: cards, PayPal, bank transfers. Payment is secure and encrypted.</p>
+                    </div>
+                </div>
+                
+                <div class="faq-item">
+                    <button class="faq-question" onclick="toggleFaq(this)">
+                        <span data-i18n="faq.q4.question">What is the fabric composition?</span>
+                        <i class="fas fa-chevron-down"></i>
+                    </button>
+                    <div class="faq-answer">
+                        <p data-i18n="faq.q4.answer">100% premium cotton, 240 GSM density. Soft, durable, and maintains shape after washing.</p>
+                    </div>
+                </div>
+                
+                <div class="faq-item">
+                    <button class="faq-question" onclick="toggleFaq(this)">
+                        <span data-i18n="faq.q5.question">How to arrange a return?</span>
+                        <i class="fas fa-chevron-down"></i>
+                    </button>
+                    <div class="faq-answer">
+                        <p data-i18n="faq.q5.answer">Contact us within 14 days of receiving the order. We'll provide a return label and process the refund within 5-7 business days.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Final CTA Section -->
+    <section id="contact" class="final-cta-section">
+        <div class="container">
+            <h2 data-i18n="final_cta.title">Stop Postponing Self-Expression</h2>
+            <p data-i18n="final_cta.subtitle">Choose your catalog and create a look that will be remembered.</p>
+            
+            <div class="final-cta-buttons">
+                <button class="btn btn-primary" onclick="scrollToSection('no-logo-catalog')" data-i18n="final_cta.no_logo">Buy No Logo</button>
+                <button class="btn btn-primary" onclick="scrollToSection('ready-to-wear-catalog')" data-i18n="final_cta.prints">Choose Print</button>
+                <button class="btn btn-primary" onclick="openCustomForm()" data-i18n="final_cta.custom">Order Custom</button>
+            </div>
+            
+            <div class="trust-badges">
+                <div class="trust-badge">
+                    <i class="fas fa-shield-alt"></i>
+                    <span data-i18n="trust.secure">Secure Payment</span>
+                </div>
+                <div class="trust-badge">
+                    <i class="fas fa-truck"></i>
+                    <span data-i18n="trust.delivery">Fast Delivery</span>
+                </div>
+                <div class="trust-badge">
+                    <i class="fas fa-medal"></i>
+                    <span data-i18n="trust.quality">Premium Quality</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3 data-i18n="brand.name">OVERSIZE</h3>
+                    <p data-i18n="footer.description">Premium oversize clothing for unique style and maximum comfort.</p>
+                </div>
+                
+                <div class="footer-section">
+                    <h4 data-i18n="footer.quick_links">Quick Links</h4>
+                    <ul>
+                        <li><a href="#catalogs" data-i18n="nav.catalog">Catalog</a></li>
+                        <li><a href="#about" data-i18n="nav.about">About</a></li>
+                        <li><a href="#reviews" data-i18n="nav.reviews">Reviews</a></li>
+                        <li><a href="#faq" data-i18n="faq.title">FAQ</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-section">
+                    <h4 data-i18n="footer.contact">Contact</h4>
+                    <p>Email: info@oversize.com</p>
+                    <p>Phone: +1 (555) 123-4567</p>
+                    <div class="social-links">
+                        <a href="#"><i class="fab fa-instagram"></i></a>
+                        <a href="#"><i class="fab fa-telegram"></i></a>
+                        <a href="#"><i class="fab fa-whatsapp"></i></a>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="footer-bottom">
+                <p>&copy; 2025 OVERSIZE. <span data-i18n="footer.rights">All rights reserved.</span></p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Back to Top Button -->
+    <button id="back-to-top" class="back-to-top" onclick="scrollToTop()" aria-label="Back to top">
+        <i class="fas fa-chevron-up"></i>
+    </button>
+
+    <!-- Shopping Cart Modal -->
+    <div id="cart-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 data-i18n="cart.title">Shopping Cart</h3>
+                <button class="modal-close" onclick="closeCart()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div id="cart-items"></div>
+                <div class="cart-total">
+                    <strong><span data-i18n="cart.total">Total: </span><span id="cart-total-amount">$0.00</span></strong>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeCart()" data-i18n="cart.continue_shopping">Continue Shopping</button>
+                <button class="btn btn-primary" onclick="checkout()" data-i18n="cart.checkout">Checkout</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Custom Order Modal -->
+    <div id="custom-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 data-i18n="custom.title">Custom Order</h3>
+                <button class="modal-close" onclick="closeCustomForm()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="custom-form">
+                    <div class="form-group">
+                        <label data-i18n="custom.name">Name:</label>
+                        <input type="text" id="custom-name" required>
+                    </div>
+                    <div class="form-group">
+                        <label data-i18n="custom.email">Email:</label>
+                        <input type="email" id="custom-email" required>
+                    </div>
+                    <div class="form-group">
+                        <label data-i18n="custom.type">Item Type:</label>
+                        <select id="custom-type" required>
+                            <option value="" data-i18n="custom.select_type">Select type</option>
+                            <option value="t-shirt" data-i18n="custom.tshirt">T-shirt</option>
+                            <option value="hoodie" data-i18n="custom.hoodie">Hoodie</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label data-i18n="custom.size">Size:</label>
+                        <select id="custom-size" required>
+                            <option value="" data-i18n="custom.select_size">Select size</option>
+                            <option value="S">S</option>
+                            <option value="M">M</option>
+                            <option value="L">L</option>
+                            <option value="XL">XL</option>
+                            <option value="XXL">XXL</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label data-i18n="custom.description">Design Description:</label>
+                        <textarea id="custom-description" rows="4" placeholder="" data-i18n-placeholder="custom.description_placeholder" required></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label data-i18n="custom.budget">Budget Range:</label>
+                        <select id="custom-budget" required>
+                            <option value="" data-i18n="custom.select_budget">Select budget</option>
+                            <option value="50-100">$50-100</option>
+                            <option value="100-200">$100-200</option>
+                            <option value="200-300">$200-300</option>
+                            <option value="300+">$300+</option>
+                        </select>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeCustomForm()" data-i18n="custom.cancel">Cancel</button>
+                <button class="btn btn-primary" onclick="submitCustomForm()" data-i18n="custom.submit">Submit Request</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Product Modal -->
+    <div id="product-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="product-modal-title"></h3>
+                <button class="modal-close" onclick="closeProductModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div id="product-modal-content"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="assets/js/translations.js"></script>
+    <script src="assets/js/cart.js"></script>
+    <script src="assets/js/products.js"></script>
+    <script src="assets/js/main.js"></script>
+</body>
+</html>

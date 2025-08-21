@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Page - NeoCloth</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background: #f5f5f5;
+        }
+        .test-section {
+            background: white;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .success { color: green; }
+        .error { color: red; }
+        .info { color: blue; }
+    </style>
+</head>
+<body>
+    <h1>NeoCloth Test Page</h1>
+    
+    <div class="test-section">
+        <h2>Basic HTML Test</h2>
+        <p class="success">✓ HTML is working</p>
+        <p class="success">✓ CSS is working</p>
+        <p class="success">✓ Page is loading</p>
+    </div>
+    
+    <div class="test-section">
+        <h2>JavaScript Test</h2>
+        <p id="js-test">Testing JavaScript...</p>
+        <script>
+            try {
+                document.getElementById('js-test').innerHTML = '<span class="success">✓ JavaScript is working</span>';
+                console.log('JavaScript test passed');
+            } catch (error) {
+                document.getElementById('js-test').innerHTML = '<span class="error">✗ JavaScript error: ' + error.message + '</span>';
+                console.error('JavaScript test failed:', error);
+            }
+        </script>
+    </div>
+    
+    <div class="test-section">
+        <h2>Console Check</h2>
+        <p class="info">Open browser console (F12) to see detailed logs</p>
+        <p class="info">Check for any error messages</p>
+    </div>
+    
+    <div class="test-section">
+        <h2>Next Steps</h2>
+        <p>If this page works but main site doesn't:</p>
+        <ol>
+            <li>Check browser console for errors</li>
+            <li>Verify all JS files are loading</li>
+            <li>Check file paths on hosting</li>
+            <li>Test with different browsers</li>
+        </ol>
+    </div>
+</body>
+</html>
