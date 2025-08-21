@@ -1,7 +1,12 @@
 // Main JavaScript functionality
+console.log('main.js loaded successfully');
+
 document.addEventListener('DOMContentLoaded', function() {
     try {
         console.log('DOM loaded, initializing...');
+        
+        // Initialize smooth scrolling polyfill first
+        initializeSmoothScrollPolyfill();
         
         // Initialize language
         if (typeof initializeLanguage === 'function') {
@@ -29,8 +34,6 @@ document.addEventListener('DOMContentLoaded', function() {
         // Initialize scroll animations
         initializeScrollAnimations();
         
-
-        
         // Hide loading spinner
         hideLoadingSpinner();
         
@@ -46,27 +49,19 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 });
 
-// Hide loading spinner
-function hideLoadingSpinner() {
+// Initialize smooth scroll polyfill for consistent behavior across browsers
+function initializeSmoothScrollPolyfill() {
     try {
-        const spinner = document.getElementById('loading-spinner');
-        if (spinner) {
-            setTimeout(() => {
-                spinner.classList.add('hidden');
-                // Also hide with display none as fallback
-                setTimeout(() => {
-                    spinner.style.display = 'none';
-                }, 500);
-            }, 1000);
+        // Check if smooth scrolling is natively supported
+        if (!CSS.supports('scroll-behavior', 'smooth')) {
+            if (typeof smoothscroll !== 'undefined') {
+                smoothscroll.polyfill();
+            }
         }
     } catch (error) {
-        console.error('Error hiding spinner:', error);
+        console.error('Error initializing smooth scroll polyfill:', error);
     }
 }
-
-
-
-
 
 // Enhanced smooth scrolling functionality with fallback
 function initializeSmoothScrolling() {
@@ -81,7 +76,7 @@ function initializeSmoothScrolling() {
                 
                 const target = document.querySelector(href);
                 if (target) {
-                        smoothScrollTo(target, 80); // Account for fixed navbar
+                    smoothScrollTo(target, 80); // Account for fixed navbar
                     
                     // Close mobile menu if open
                     const navMenu = document.querySelector('.nav-menu');
@@ -112,29 +107,6 @@ function initializeSmoothScrolling() {
         
     } catch (error) {
         console.error('Error initializing smooth scrolling:', error);
-    }
-}
-
-// Enhanced scroll to section function
-function scrollToSection(sectionId) {
-    try {
-        const section = document.getElementById(sectionId);
-        if (section) {
-            smoothScrollTo(section, 80);
-            
-            // Close mobile menu if open
-            const navMenu = document.querySelector('.nav-menu');
-            const mobileMenuToggle = document.getElementById('mobile-menu-toggle');
-            if (navMenu && navMenu.classList.contains('active')) {
-                navMenu.classList.remove('active');
-                if (mobileMenuToggle) {
-                    mobileMenuToggle.classList.remove('active');
-                }
-                document.body.classList.remove('menu-open');
-            }
-        }
-    } catch (error) {
-        console.error('Error scrolling to section:', error);
     }
 }
 
@@ -182,6 +154,29 @@ function smoothScrollTo(target, offset = 0) {
     }
 }
 
+// Enhanced scroll to section function
+function scrollToSection(sectionId) {
+    try {
+        const section = document.getElementById(sectionId);
+        if (section) {
+            smoothScrollTo(section, 80);
+            
+            // Close mobile menu if open
+            const navMenu = document.querySelector('.nav-menu');
+            const mobileMenuToggle = document.getElementById('mobile-menu-toggle');
+            if (navMenu && navMenu.classList.contains('active')) {
+                navMenu.classList.remove('active');
+                if (mobileMenuToggle) {
+                    mobileMenuToggle.classList.remove('active');
+                }
+                document.body.classList.remove('menu-open');
+            }
+        }
+    } catch (error) {
+        console.error('Error scrolling to section:', error);
+    }
+}
+
 // Enhanced scroll to top function - scrolls to hero section
 function scrollToTop() {
     try {
@@ -203,17 +198,28 @@ function scrollToTop() {
 function initializeNavbarScroll() {
     try {
         const navbar = document.getElementById('navbar');
+        console.log('Navbar element:', navbar);
+        
         if (navbar) {
             window.addEventListener('scroll', function() {
-                if (window.scrollY > 50) {
+                const scrollY = window.scrollY;
+                const shouldAddScrolled = scrollY > 50;
+                
+                if (shouldAddScrolled) {
                     navbar.classList.add('scrolled');
+                    console.log('Navbar scrolled class added');
                 } else {
                     navbar.classList.remove('scrolled');
+                    console.log('Navbar scrolled class removed');
                 }
                 
                 // Update active navigation link
                 updateActiveNavLink();
             });
+            
+            console.log('Navbar scroll initialized successfully');
+        } else {
+            console.error('Navbar element not found!');
         }
     } catch (error) {
         console.error('Error initializing navbar scroll:', error);
@@ -252,6 +258,8 @@ function updateActiveNavLink() {
 function initializeBackToTop() {
     try {
         const backToTopBtn = document.getElementById('back-to-top');
+        console.log('Back to top button element:', backToTopBtn);
+        
         if (backToTopBtn) {
             // Handle scroll events to show/hide button
             window.addEventListener('scroll', function() {
@@ -259,23 +267,31 @@ function initializeBackToTop() {
                 const heroSection = document.getElementById('hero');
                 if (heroSection) {
                     const heroBottom = heroSection.offsetTop + heroSection.offsetHeight;
-                    if (window.scrollY > heroBottom - 100) {
+                    const shouldShow = window.scrollY > heroBottom - 100;
+                    console.log('Scroll check:', { scrollY: window.scrollY, heroBottom, shouldShow });
+                    
+                    if (shouldShow) {
                         backToTopBtn.classList.add('show');
+                        console.log('Back to top button shown');
                     } else {
                         backToTopBtn.classList.remove('show');
+                        console.log('Back to top button hidden');
                     }
                 } else {
                     // Fallback: show after 300px scroll
-                if (window.scrollY > 300) {
-                    backToTopBtn.classList.add('show');
-                } else {
-                    backToTopBtn.classList.remove('show');
+                    if (window.scrollY > 300) {
+                        backToTopBtn.classList.add('show');
+                        console.log('Back to top button shown (fallback)');
+                    } else {
+                        backToTopBtn.classList.remove('show');
+                        console.log('Back to top button hidden (fallback)');
                     }
                 }
             });
             
             // Handle click event to scroll to top
             backToTopBtn.addEventListener('click', function() {
+                console.log('Back to top button clicked');
                 const heroSection = document.getElementById('hero');
                 if (heroSection) {
                     smoothScrollTo(heroSection, 80);
@@ -283,6 +299,10 @@ function initializeBackToTop() {
                     smoothScrollTo(document.body, 0);
                 }
             });
+            
+            console.log('Back to top button initialized successfully');
+        } else {
+            console.error('Back to top button not found!');
         }
     } catch (error) {
         console.error('Error initializing back to top:', error);
@@ -365,38 +385,131 @@ function initializeLanguageSwitcher() {
     }
 }
 
-// Scroll animations
+// GSAP Scroll Animations
 function initializeScrollAnimations() {
     try {
-        // Check if IntersectionObserver is supported
-        if (!('IntersectionObserver' in window)) {
-            console.log('IntersectionObserver not supported, skipping scroll animations');
+        // Check if GSAP and ScrollTrigger are available
+        if (typeof gsap === 'undefined' || typeof ScrollTrigger === 'undefined') {
+            console.log('GSAP or ScrollTrigger not available, using basic animations');
+            initializeBasicScrollAnimations();
             return;
         }
         
-        const observerOptions = {
-            threshold: 0.1,
-            rootMargin: '0px 0px -50px 0px'
-        };
+        // Register ScrollTrigger plugin
+        gsap.registerPlugin(ScrollTrigger);
         
-        const observer = new IntersectionObserver(function(entries) {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    entry.target.classList.add('fade-in');
-                }
-            });
-        }, observerOptions);
+        // Animate solution-card elements in the solution section
+        const solutionSection = document.querySelector('#solution');
+        if (solutionSection) {
+            const solutionCards = solutionSection.querySelectorAll('.solution-card');
+            
+            if (solutionCards.length > 0) {
+                // Set initial state for all cards
+                gsap.set(solutionCards, {
+                    opacity: 0,
+                    y: -50,
+                    scale: 0.9
+                });
+                
+                // Animate each card with stagger
+                gsap.to(solutionCards, {
+                    opacity: 1,
+                    y: 0,
+                    scale: 1,
+                    duration: 0.6,
+                    stagger: 0.2,
+                    ease: "power2.out",
+                    scrollTrigger: {
+                        trigger: solutionSection,
+                        start: "top 80%",
+                        end: "bottom 20%",
+                        toggleActions: "play none none reverse"
+                    }
+                });
+            }
+        }
         
-        // Observe elements for animation
-        const elementsToAnimate = document.querySelectorAll(
-            '.solution-card, .catalog-section, .about-card, .review-card, .product-card'
-        );
+        // Add more animations for other sections if needed
+        const catalogSection = document.querySelector('#catalogs');
+        if (catalogSection) {
+            const catalogCards = catalogSection.querySelectorAll('.catalog-card');
+            if (catalogCards.length > 0) {
+                gsap.fromTo(catalogCards, 
+                    { opacity: 0, y: 30 },
+                    {
+                        opacity: 1,
+                        y: 0,
+                        duration: 0.5,
+                        stagger: 0.1,
+                        ease: "power2.out",
+                        scrollTrigger: {
+                            trigger: catalogSection,
+                            start: "top 80%",
+                            toggleActions: "play none none reverse"
+                        }
+                    }
+                );
+            }
+        }
         
-        elementsToAnimate.forEach(element => {
-            observer.observe(element);
-        });
+        console.log('GSAP scroll animations initialized successfully');
     } catch (error) {
-        console.error('Error initializing scroll animations:', error);
+        console.error('Error initializing GSAP animations:', error);
+        // Fallback to basic animations
+        initializeBasicScrollAnimations();
+    }
+}
+
+// Fallback function for when GSAP is not available
+function initializeBasicScrollAnimations() {
+    try {
+        if (!('IntersectionObserver' in window)) {
+            return;
+        }
+        
+        // Simple fade-in animations for solution cards
+        const solutionSection = document.querySelector('#solution');
+        if (solutionSection) {
+            const solutionCards = solutionSection.querySelectorAll('.solution-card');
+            
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.style.opacity = '1';
+                        entry.target.style.transform = 'translateY(0)';
+                    }
+                });
+            }, { threshold: 0.1 });
+            
+            solutionCards.forEach(card => {
+                card.style.opacity = '0';
+                card.style.transform = 'translateY(30px)';
+                card.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+                observer.observe(card);
+            });
+        }
+        
+        console.log('Basic scroll animations initialized');
+    } catch (error) {
+        console.error('Error initializing basic animations:', error);
+    }
+}
+
+// Hide loading spinner
+function hideLoadingSpinner() {
+    try {
+        const spinner = document.getElementById('loading-spinner');
+        if (spinner) {
+            setTimeout(() => {
+                spinner.classList.add('hidden');
+                // Also hide with display none as fallback
+                setTimeout(() => {
+                    spinner.style.display = 'none';
+                }, 500);
+            }, 1000);
+        }
+    } catch (error) {
+        console.error('Error hiding spinner:', error);
     }
 }
 
@@ -452,144 +565,6 @@ function validateForm(formElement) {
     });
     
     return isValid;
-}
-
-// Fallback initialization - ensure basic functionality works
-window.addEventListener('load', function() {
-    try {
-        console.log('Window loaded, running fallback initialization...');
-        
-        // Hide loading spinner if it's still visible
-        const spinner = document.getElementById('loading-spinner');
-        if (spinner) {
-            spinner.style.display = 'none';
-        }
-        
-        // Ensure body is visible
-        document.body.style.display = 'block';
-        
-
-        
-        // Basic mobile menu fallback
-        const mobileToggle = document.getElementById('mobile-menu-toggle');
-        const navMenu = document.querySelector('.nav-menu');
-        
-        if (mobileToggle && navMenu) {
-            mobileToggle.addEventListener('click', function() {
-                navMenu.classList.toggle('active');
-            });
-        }
-        
-        // Basic smooth scrolling fallback
-        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-            anchor.addEventListener('click', function (e) {
-                e.preventDefault();
-                const target = document.querySelector(this.getAttribute('href'));
-                if (target) {
-                    target.scrollIntoView({ behavior: 'smooth' });
-                }
-            });
-        });
-        
-        console.log('Fallback initialization completed');
-    } catch (error) {
-        console.error('Error in fallback initialization:', error);
-        // Last resort - force content visibility
-        document.body.style.display = 'block';
-        const spinner = document.getElementById('loading-spinner');
-        if (spinner) {
-            spinner.style.display = 'none';
-        }
-    }
-});
-
-// Global error handler
-window.addEventListener('error', function(event) {
-    console.error('Global error caught:', event.error);
-    // Ensure content is visible even if there are errors
-    document.body.style.display = 'block';
-    const spinner = document.getElementById('loading-spinner');
-    if (spinner) {
-        spinner.style.display = 'none';
-    }
-
-});
-
-// Unhandled promise rejection handler
-window.addEventListener('unhandledrejection', function(event) {
-    console.error('Unhandled promise rejection:', event.reason);
-    // Ensure content is visible even if there are errors
-    document.body.style.display = 'block';
-    const spinner = document.getElementById('loading-spinner');
-    if (spinner) {
-        spinner.style.display = 'none';
-    }
-});
-
-// Cookie consent (if needed)
-function initializeCookieConsent() {
-    const cookieConsent = localStorage.getItem('cookie-consent');
-    
-    if (!cookieConsent) {
-        const banner = document.createElement('div');
-        banner.className = 'cookie-banner';
-        banner.innerHTML = `
-            <div class="cookie-content">
-                <p>We use cookies to enhance your experience. By continuing to visit this site you agree to our use of cookies.</p>
-                <button class="btn btn-primary" onclick="acceptCookies()">Accept</button>
-            </div>
-        `;
-        
-        banner.style.cssText = `
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            background: #333;
-            color: white;
-            padding: 1rem;
-            z-index: 2000;
-            transform: translateY(100%);
-            transition: transform 0.3s ease;
-        `;
-        
-        document.body.appendChild(banner);
-        
-        setTimeout(() => {
-            banner.style.transform = 'translateY(0)';
-        }, 1000);
-    }
-}
-
-function acceptCookies() {
-    localStorage.setItem('cookie-consent', 'true');
-    const banner = document.querySelector('.cookie-banner');
-    if (banner) {
-        banner.style.transform = 'translateY(100%)';
-        setTimeout(() => {
-            banner.remove();
-        }, 300);
-    }
-}
-
-// Performance optimization
-function lazyLoadImages() {
-    const images = document.querySelectorAll('img[loading="lazy"]');
-    
-    if ('IntersectionObserver' in window) {
-        const imageObserver = new IntersectionObserver((entries, observer) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    const img = entry.target;
-                    img.src = img.dataset.src || img.src;
-                    img.classList.remove('lazy');
-                    imageObserver.unobserve(img);
-                }
-            });
-        });
-        
-        images.forEach(img => imageObserver.observe(img));
-    }
 }
 
 // Google Analytics (if needed)
@@ -676,68 +651,33 @@ document.addEventListener('keydown', function(e) {
     }
 });
 
-// Accessibility improvements
-function initializeAccessibility() {
-    // Add skip link
-    const skipLink = document.createElement('a');
-    skipLink.href = '#main-content';
-    skipLink.textContent = 'Skip to main content';
-    skipLink.className = 'skip-link';
-    skipLink.style.cssText = `
-        position: absolute;
-        top: -40px;
-        left: 6px;
-        background: #333;
-        color: white;
-        padding: 8px;
-        text-decoration: none;
-        z-index: 10000;
-        border-radius: 4px;
-    `;
-    
-    skipLink.addEventListener('focus', function() {
-        this.style.top = '6px';
-    });
-    
-    skipLink.addEventListener('blur', function() {
-        this.style.top = '-40px';
-    });
-    
-    document.body.insertBefore(skipLink, document.body.firstChild);
-    
-    // Add main content landmark
-    const heroSection = document.getElementById('hero');
-    if (heroSection) {
-        heroSection.setAttribute('id', 'main-content');
-        heroSection.setAttribute('tabindex', '-1');
-    }
-}
-
-// Initialize accessibility on load
-document.addEventListener('DOMContentLoaded', initializeAccessibility);
-
-// Language switcher functionality
-function initializeLanguageSwitcher() {
-    try {
-        const langButtons = document.querySelectorAll('.lang-btn');
-        langButtons.forEach(btn => {
-            btn.addEventListener('click', function() {
-                const lang = this.getAttribute('data-lang');
-                if (lang && typeof setLanguage === 'function') {
-                    setLanguage(lang);
-                }
-            });
-        });
-        console.log('Language switcher initialized');
-    } catch (error) {
-        console.error('Error initializing language switcher:', error);
-    }
-}
-
 // Export global functions
 window.scrollToSection = scrollToSection;
 window.scrollToTop = scrollToTop;
+window.smoothScrollTo = smoothScrollTo;
 window.toggleFaq = toggleFaq;
 window.shareOnSocial = shareOnSocial;
 window.copyToClipboard = copyToClipboard;
-window.acceptCookies = acceptCookies;
+
+// Debug information
+console.log('=== DEBUG INFO ===');
+console.log('Functions exported:');
+console.log('- scrollToSection:', typeof window.scrollToSection);
+console.log('- scrollToTop:', typeof window.scrollToTop);
+console.log('- smoothScrollTo:', typeof window.smoothScrollTo);
+console.log('- toggleFaq:', typeof window.toggleFaq);
+
+// Verify basic scroll functionality
+console.log('Basic scroll functionality check:');
+console.log('CSS.supports scroll-behavior smooth:', CSS.supports('scroll-behavior', 'smooth'));
+console.log('window.scrollTo available:', typeof window.scrollTo === 'function');
+
+// Check if all sections exist
+console.log('Checking sections:');
+console.log('- hero:', document.getElementById('hero'));
+console.log('- catalogs:', document.getElementById('catalogs'));
+console.log('- about:', document.getElementById('about'));
+console.log('- reviews:', document.getElementById('reviews'));
+console.log('- contact:', document.getElementById('contact'));
+
+console.log('=== END DEBUG INFO ===');

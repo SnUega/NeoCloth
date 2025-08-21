@@ -5,15 +5,130 @@
     box-sizing: border-box;
 }
 
-/* Enhanced image hover effects */
-img:hover {
-    transform: scale(1.02);
-    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+html {
+    font-size: 16px;
 }
 
-html {
-    scroll-behavior: smooth;
-    font-size: 16px;
+/* Ensure smooth scrolling works on all browsers */
+/* Removed global scroll-behavior to avoid conflicts with JavaScript */
+
+/* Fix mobile header spacing and positioning */
+@media (max-width: 768px) {
+    body {
+        padding-top: 0 !important;
+        margin-top: 0 !important;
+    }
+    
+    .navbar {
+        position: fixed !important;
+        top: 0 !important;
+        left: 0 !important;
+        right: 0 !important;
+        transform: none !important;
+    }
+    
+    /* Ensure content starts right after navbar */
+    .hero {
+        margin-top: 70px !important;
+        padding-top: 0 !important;
+    }
+    
+    /* Fix modal positioning on mobile */
+    .modal-content {
+        width: 95%;
+        max-height: 85vh;
+        margin: 20px;
+    }
+}
+
+
+
+/* Global smooth transitions for all interactive elements */
+a, button, input, select, textarea {
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Smooth hover effects for all clickable elements */
+[onclick], [href], button, .clickable {
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Smooth focus effects */
+a:focus, button:focus, input:focus, select:focus, textarea:focus {
+    outline: 2px solid #333;
+    outline-offset: 2px;
+    transition: outline 0.2s ease;
+}
+
+/* Smooth image transitions */
+img {
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+img:hover {
+    transform: scale(1.02);
+}
+
+/* Smooth icon transitions */
+i, .fas, .far, .fab {
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Enhanced button hover effects */
+.btn:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+}
+
+.btn:active {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+}
+
+/* Smooth transitions for all interactive elements */
+[onclick]:hover, [href]:hover, .clickable:hover {
+    transform: translateY(-2px);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Enhanced link hover effects */
+a[href^="#"]:hover {
+    transform: translateY(-1px);
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* Smooth transitions for all sections */
+section {
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    scroll-margin-top: 80px; /* Account for fixed navbar */
+    /* Ensure sections are properly positioned */
+    position: relative;
+    z-index: 1;
+}
+
+/* Enhanced scroll animations */
+.scroll-animate {
+    opacity: 1; /* Start visible by default */
+    transform: translateY(0); /* Start in normal position */
+    transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.scroll-animate.animate {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* Only apply initial hidden state to child elements, not sections */
+.scroll-animate > * {
+    opacity: 0;
+    transform: translateY(40px);
+    transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.scroll-animate.animate > * {
+    opacity: 1;
+    transform: translateY(0);
 }
 
 body {
@@ -24,6 +139,10 @@ body {
     overflow-x: hidden;
     /* Ensure body is always visible */
     display: block !important;
+    perspective: 1000px; /* Global 3D perspective */
+    /* Fix mobile header spacing issue */
+    padding-top: 0;
+    margin-top: 0;
 }
 
 /* Fallback styles for when JavaScript fails */
@@ -44,35 +163,9 @@ body {
     display: block !important;
     visibility: visible !important;
     opacity: 1 !important;
-}
-
-/* Smooth transitions for all sections */
-section {
-    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-    scroll-margin-top: 80px; /* Account for fixed navbar */
-}
-
-/* Enhanced scroll animations */
-.scroll-animate {
-    opacity: 1;
-    transform: translateY(0);
-    transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-.scroll-animate.animate {
-    opacity: 1;
-    transform: translateY(0);
-}
-
-.scroll-animate > * {
-    opacity: 0;
-    transform: translateY(40px);
-    transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-.scroll-animate.animate > * {
-    opacity: 1;
-    transform: translateY(0);
+    /* Fix positioning issues */
+    position: relative;
+    z-index: 1;
 }
 
 .container {
@@ -128,6 +221,9 @@ section {
     border-bottom: 1px solid #eee;
     z-index: 1000;
     transition: all 0.3s ease;
+    /* Ensure navbar is always visible and properly positioned */
+    transform: translateZ(0);
+    will-change: transform;
 }
 
 .navbar.scrolled {
@@ -185,10 +281,14 @@ section {
     width: 0;
     height: 2px;
     background: #333;
-    transition: width 0.3s ease;
+    transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .nav-menu a:hover::after {
+    width: 100%;
+}
+
+.nav-menu a.active::after {
     width: 100%;
 }
 
@@ -212,7 +312,7 @@ section {
     font-size: 0.875rem;
     font-weight: 500;
     cursor: pointer;
-    transition: all 0.3s ease;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
     position: relative;
     overflow: hidden;
 }
@@ -224,7 +324,7 @@ section {
     left: -100%;
     width: 100%;
     height: 100%;
-    background: linear-gradient(90deg, transparent, rgba(51, 51, 51, 0.1), transparent);
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
     transition: left 0.5s ease;
 }
 
@@ -244,11 +344,15 @@ section {
     position: relative;
     cursor: pointer;
     padding: 10px;
-    transition: transform 0.3s ease;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .cart-icon:hover {
     transform: scale(1.1);
+}
+
+.cart-icon:active {
+    transform: scale(0.95);
 }
 
 .cart-icon i {
@@ -270,6 +374,14 @@ section {
     align-items: center;
     justify-content: center;
     font-weight: 600;
+    transition: all 0.3s ease;
+    animation: cartCountBounce 0.6s ease-out;
+}
+
+@keyframes cartCountBounce {
+    0% { transform: scale(0); }
+    50% { transform: scale(1.2); }
+    100% { transform: scale(1); }
 }
 
 /* Mobile Menu Toggle */
@@ -281,11 +393,43 @@ section {
     border: none;
     cursor: pointer;
     padding: 5px;
-    transition: all 0.3s ease;
 }
 
-.mobile-menu-toggle:hover {
-    transform: scale(1.1);
+/* Mobile Menu Styles */
+@media (max-width: 768px) {
+    .nav-menu {
+        display: none;
+        flex-direction: column;
+        position: absolute;
+        top: 100%;
+        left: 0;
+        right: 0;
+        background: rgba(255, 255, 255, 0.98);
+        backdrop-filter: blur(10px);
+        padding: 1rem;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+        border-top: 1px solid #eee;
+        transform: translateY(-10px);
+        opacity: 0;
+        transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    
+    .nav-menu.active {
+        display: flex;
+        transform: translateY(0);
+        opacity: 1;
+    }
+    
+    .nav-menu a {
+        padding: 1rem 0;
+        border-bottom: 1px solid #f0f0f0;
+        text-align: center;
+        font-size: 1.1rem;
+    }
+    
+    .nav-menu a:last-child {
+        border-bottom: none;
+    }
 }
 
 .mobile-menu-toggle span {
@@ -293,12 +437,24 @@ section {
     height: 3px;
     background: #333;
     border-radius: 2px;
-    transition: all 0.3s ease;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    transform-origin: center;
+}
+
+.mobile-menu-toggle.active span:nth-child(1) {
+    transform: rotate(45deg) translate(6px, 6px);
+}
+
+.mobile-menu-toggle.active span:nth-child(2) {
+    opacity: 0;
+}
+
+.mobile-menu-toggle.active span:nth-child(3) {
+    transform: rotate(-45deg) translate(6px, -6px);
 }
 
 /* Hero Section */
 .hero {
-    margin-top: 70px;
     min-height: 90vh;
     display: flex;
     align-items: center;
@@ -307,6 +463,7 @@ section {
     background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 50%, #f8f9fa 100%);
     position: relative;
     overflow: hidden;
+
 }
 
 @media (max-width: 768px) {
@@ -365,11 +522,6 @@ section {
 
 .hero-content {
     animation: fadeInLeft 0.8s ease-out;
-    transition: all 0.3s ease;
-}
-
-.hero-content:hover {
-    transform: translateY(-2px);
 }
 
 @keyframes fadeInLeft {
@@ -420,11 +572,6 @@ section {
     flex-wrap: wrap;
     margin-top: 1rem;
     animation: fadeInUp 0.8s ease-out 0.4s both;
-    transition: all 0.3s ease;
-}
-
-.hero-cta:hover {
-    transform: translateY(-2px);
 }
 
 .hero-image {
@@ -433,11 +580,6 @@ section {
     align-items: center;
     animation: fadeInRight 0.8s ease-out 0.6s both;
     position: relative;
-    transition: all 0.3s ease;
-}
-
-.hero-image:hover {
-    transform: translateY(-2px);
 }
 
 @keyframes fadeInRight {
@@ -457,7 +599,7 @@ section {
     object-fit: cover;
     border-radius: 20px;
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-    transition: all 0.3s ease;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
     position: relative;
     overflow: hidden;
     border: 3px solid rgba(255, 255, 255, 0.2);
@@ -466,7 +608,7 @@ section {
 }
 
 .hero-img:hover {
-    transform: translateY(-5px) scale(1.02);
+    transform: translateY(-5px);
     box-shadow: 0 15px 40px rgba(0, 0, 0, 0.15);
 }
 
@@ -480,7 +622,7 @@ section {
     font-weight: 600;
     text-decoration: none;
     cursor: pointer;
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
     white-space: nowrap;
     position: relative;
     overflow: hidden;
@@ -496,11 +638,6 @@ section {
     background: linear-gradient(135deg, #555 0%, #333 100%);
     transform: translateY(-3px);
     box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
-}
-
-.btn:active {
-    transform: translateY(-1px);
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
 }
 
 .btn-secondary {
@@ -525,23 +662,11 @@ section {
     width: 100%;
     height: 100%;
     background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
-    transition: left 0.5s ease;
+    transition: left 0.5s;
 }
 
 .btn:hover::before {
     left: 100%;
-}
-
-/* Enhanced hover effects for all interactive elements */
-[onclick]:hover, [href]:hover, .clickable:hover {
-    transform: translateY(-2px);
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-/* Enhanced link hover effects */
-a[href^="#"]:hover {
-    transform: translateY(-1px);
-    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 /* Problem Section */
@@ -549,11 +674,6 @@ a[href^="#"]:hover {
     padding: 5rem 0;
     background: #f8f9fa;
     text-align: center;
-    transition: all 0.3s ease;
-}
-
-.problem-section:hover {
-    transform: translateY(-2px);
 }
 
 .problem-section h2 {
@@ -575,11 +695,6 @@ a[href^="#"]:hover {
 .solution-section {
     padding: 5rem 0;
     background: #fff;
-    transition: all 0.3s ease;
-}
-
-.solution-section:hover {
-    transform: translateY(-2px);
 }
 
 .solution-section h2 {
@@ -601,6 +716,7 @@ a[href^="#"]:hover {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
     gap: 2rem;
+    transform-style: preserve-3d; /* Enable 3D for grid container */
 }
 
 .solution-card {
@@ -676,11 +792,6 @@ a[href^="#"]:hover {
 .catalogs-section {
     padding: 5rem 0;
     background: #fff;
-    transition: all 0.3s ease;
-}
-
-.catalogs-section:hover {
-    transform: translateY(-2px);
 }
 
 .catalogs-section > .container > h2 {
@@ -698,11 +809,6 @@ a[href^="#"]:hover {
 .catalog-header {
     text-align: center;
     margin-bottom: 3rem;
-    transition: all 0.3s ease;
-}
-
-.catalog-header:hover {
-    transform: translateY(-2px);
 }
 
 .catalog-header h3 {
@@ -729,11 +835,6 @@ a[href^="#"]:hover {
 .benefit {
     text-align: center;
     padding: 1.5rem;
-    transition: all 0.3s ease;
-}
-
-.benefit:hover {
-    transform: translateY(-3px);
 }
 
 .benefit h4 {
@@ -887,6 +988,7 @@ a[href^="#"]:hover {
     min-width: 120px;
     padding: 0.75rem 1rem;
     font-size: 0.875rem;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
     position: relative;
     overflow: hidden;
 }
@@ -909,11 +1011,6 @@ a[href^="#"]:hover {
 /* Custom Process */
 .custom-process {
     margin: 3rem 0;
-    transition: all 0.3s ease;
-}
-
-.custom-process:hover {
-    transform: translateY(-2px);
 }
 
 .custom-process h4 {
@@ -976,22 +1073,12 @@ a[href^="#"]:hover {
 .custom-cta {
     text-align: center;
     margin-top: 2rem;
-    transition: all 0.3s ease;
-}
-
-.custom-cta:hover {
-    transform: translateY(-2px);
 }
 
 /* About Section */
 .about-section {
     padding: 5rem 0;
     background: #f8f9fa;
-    transition: all 0.3s ease;
-}
-
-.about-section:hover {
-    transform: translateY(-2px);
 }
 
 .about-section h2 {
@@ -1095,27 +1182,10 @@ a[href^="#"]:hover {
     color: #333;
 }
 
-.about-card h3 {
-    font-size: 1.25rem;
-    font-weight: 600;
-    margin-bottom: 1rem;
-    color: #333;
-}
-
-.about-card p {
-    color: #666;
-    line-height: 1.6;
-}
-
 /* Reviews Section */
 .reviews-section {
     padding: 5rem 0;
     background: #fff;
-    transition: all 0.3s ease;
-}
-
-.reviews-section:hover {
-    transform: translateY(-2px);
 }
 
 .reviews-section h2 {
@@ -1247,11 +1317,6 @@ a[href^="#"]:hover {
 .faq-section {
     padding: 5rem 0;
     background: #f8f9fa;
-    transition: all 0.3s ease;
-}
-
-.faq-section:hover {
-    transform: translateY(-2px);
 }
 
 .faq-section h2 {
@@ -1314,7 +1379,7 @@ a[href^="#"]:hover {
 }
 
 .faq-question i {
-    transition: transform 0.3s ease;
+    transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .faq-item.active .faq-question i {
@@ -1324,12 +1389,16 @@ a[href^="#"]:hover {
 .faq-answer {
     max-height: 0;
     overflow: hidden;
-    transition: max-height 0.3s ease, padding 0.3s ease;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    opacity: 0;
+    transform: translateY(-10px);
 }
 
 .faq-item.active .faq-answer {
     max-height: 200px;
     padding: 0 1.5rem 1.5rem;
+    opacity: 1;
+    transform: translateY(0);
 }
 
 .faq-answer p {
@@ -1343,11 +1412,6 @@ a[href^="#"]:hover {
     background: linear-gradient(135deg, #333 0%, #555 100%);
     color: #fff;
     text-align: center;
-    transition: all 0.3s ease;
-}
-
-.final-cta-section:hover {
-    transform: translateY(-2px);
 }
 
 .final-cta-section h2 {
@@ -1392,12 +1456,6 @@ a[href^="#"]:hover {
     align-items: center;
     gap: 0.5rem;
     opacity: 0.8;
-    transition: all 0.3s ease;
-}
-
-.trust-badge:hover {
-    opacity: 1;
-    transform: translateY(-2px);
 }
 
 .trust-badge i {
@@ -1409,11 +1467,6 @@ a[href^="#"]:hover {
     background: #222;
     color: #fff;
     padding: 3rem 0 1rem;
-    transition: all 0.3s ease;
-}
-
-.footer:hover {
-    transform: translateY(-2px);
 }
 
 .footer-content {
@@ -1493,15 +1546,19 @@ a[href^="#"]:hover {
     justify-content: center;
     font-size: 1.25rem;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-    transition: all 0.3s ease;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
     opacity: 0;
     visibility: hidden;
     z-index: 999;
+    /* Fix positioning */
+    transform: translateY(20px) scale(0.8);
+    transform-origin: center;
 }
 
 .back-to-top.show {
     opacity: 1;
     visibility: visible;
+    transform: translateY(0) scale(1);
 }
 
 .back-to-top:hover {
@@ -1522,20 +1579,19 @@ a[href^="#"]:hover {
     left: 0;
     width: 100%;
     height: 100%;
-    background: rgba(0, 0, 0, 0.5);
+    background: rgba(0, 0, 0, 0);
     z-index: 2000;
     align-items: center;
     justify-content: center;
-    transition: all 0.3s ease;
-    overflow: hidden;
-}
-
-.modal:hover {
-    background: rgba(0, 0, 0, 0.6);
+    transition: background 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    /* Ensure modal is properly positioned */
+    transform: translateZ(0);
+    will-change: transform;
 }
 
 .modal.show {
     display: flex;
+    background: rgba(0, 0, 0, 0.5);
 }
 
 .modal-content {
@@ -1546,18 +1602,19 @@ a[href^="#"]:hover {
     max-height: 90vh;
     overflow-y: auto;
     box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
-    transition: all 0.3s ease;
-    scrollbar-width: none; /* Firefox */
-    -ms-overflow-style: none; /* IE and Edge */
+    opacity: 0;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    /* Fix modal positioning - center on screen */
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) scale(0.8);
+    transform-origin: center center;
 }
 
-.modal-content::-webkit-scrollbar {
-    display: none; /* Chrome, Safari and Opera */
-}
-
-.modal-content:hover {
-    transform: scale(1.02);
-    box-shadow: 0 25px 50px rgba(0, 0, 0, 0.4);
+.modal.show .modal-content {
+    transform: translate(-50%, -50%) scale(1);
+    opacity: 1;
 }
 
 .modal-header {
@@ -1566,22 +1623,11 @@ a[href^="#"]:hover {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    transition: all 0.3s ease;
-}
-
-.modal-header:hover {
-    background: #f8f9fa;
 }
 
 .modal-header h3 {
     margin: 0;
     color: #333;
-    transition: all 0.3s ease;
-}
-
-.modal-header:hover h3 {
-    color: #000;
-    transform: translateY(-1px);
 }
 
 .modal-close {
@@ -1596,10 +1642,25 @@ a[href^="#"]:hover {
     align-items: center;
     justify-content: center;
     border-radius: 50%;
-    transition: all 0.3s ease;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    overflow: hidden;
 }
 
-/* Убираем эффект перелива с кнопки закрытия */
+.modal-close::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(0, 0, 0, 0.1), transparent);
+    transition: left 0.5s ease;
+}
+
+.modal-close:hover::before {
+    left: 100%;
+}
 
 .modal-close:hover {
     background: #f1f3f4;
@@ -1608,11 +1669,6 @@ a[href^="#"]:hover {
 
 .modal-body {
     padding: 1.5rem;
-    transition: all 0.3s ease;
-}
-
-.modal-body:hover {
-    background: #f8f9fa;
 }
 
 .modal-footer {
@@ -1621,11 +1677,6 @@ a[href^="#"]:hover {
     display: flex;
     justify-content: flex-end;
     gap: 1rem;
-    transition: all 0.3s ease;
-}
-
-.modal-footer:hover {
-    background: #f8f9fa;
 }
 
 /* Form Styles */
@@ -1649,6 +1700,7 @@ a[href^="#"]:hover {
     border-radius: 6px;
     font-size: 1rem;
     transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
 }
 
 .form-group input:focus,
@@ -1673,17 +1725,6 @@ a[href^="#"]:hover {
     align-items: center;
     padding: 1rem 0;
     border-bottom: 1px solid #eee;
-    transition: all 0.3s ease;
-}
-
-.cart-item:hover {
-    transform: translateX(5px);
-    background: #f8f9fa;
-    padding-left: 1rem;
-    padding-right: 1rem;
-    margin-left: -1rem;
-    margin-right: -1rem;
-    border-radius: 8px;
 }
 
 .cart-item:last-child {
@@ -1692,11 +1733,6 @@ a[href^="#"]:hover {
 
 .cart-item-info {
     flex: 1;
-    transition: all 0.3s ease;
-}
-
-.cart-item:hover .cart-item-info {
-    transform: translateX(5px);
 }
 
 .cart-item-title {
@@ -1712,12 +1748,6 @@ a[href^="#"]:hover {
 .cart-item-price {
     font-weight: 600;
     margin-left: 1rem;
-    transition: all 0.3s ease;
-}
-
-.cart-item:hover .cart-item-price {
-    transform: scale(1.1);
-    color: #333;
 }
 
 .cart-item-remove {
@@ -1728,25 +1758,17 @@ a[href^="#"]:hover {
     padding: 0.5rem;
     margin-left: 1rem;
     border-radius: 4px;
-    transition: all 0.3s ease;
+    transition: background-color 0.3s ease;
 }
 
 .cart-item-remove:hover {
     background: #f8f9fa;
-    transform: scale(1.1);
-    color: #c0392b;
 }
 
 .cart-empty {
     text-align: center;
     color: #666;
     padding: 2rem 0;
-    transition: all 0.3s ease;
-}
-
-.cart-empty:hover {
-    transform: translateY(-2px);
-    color: #333;
 }
 
 .cart-total {
@@ -1755,12 +1777,6 @@ a[href^="#"]:hover {
     border-top: 1px solid #eee;
     text-align: right;
     font-size: 1.125rem;
-    transition: all 0.3s ease;
-}
-
-.cart-total:hover {
-    transform: translateY(-2px);
-    color: #333;
 }
 
 /* Responsive Design */
@@ -2037,6 +2053,47 @@ a[href^="#"]:hover {
         opacity: 1;
         transform: translateY(0);
     }
+}
+
+/* Scroll-triggered animations */
+.scroll-animate {
+    opacity: 0;
+    transform: translateY(30px);
+    transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.scroll-animate.animate {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* Staggered animations for child elements */
+.scroll-animate.animate .solution-card,
+.scroll-animate.animate .catalog-section,
+.scroll-animate.animate .benefit,
+.scroll-animate.animate .review-card {
+    animation: fadeInUp 0.6s ease-out both;
+}
+
+.scroll-animate.animate .solution-card:nth-child(1) { animation-delay: 0.1s; }
+.scroll-animate.animate .solution-card:nth-child(2) { animation-delay: 0.2s; }
+.scroll-animate.animate .solution-card:nth-child(3) { animation-delay: 0.3s; }
+
+.scroll-animate.animate .benefit:nth-child(1) { animation-delay: 0.1s; }
+.scroll-animate.animate .benefit:nth-child(2) { animation-delay: 0.2s; }
+.scroll-animate.animate .benefit:nth-child(3) { animation-delay: 0.3s; }
+
+/* Animate section headings */
+.scroll-animate.animate h2 {
+    animation: fadeInUp 0.8s ease-out both;
+}
+
+.scroll-animate.animate h3 {
+    animation: fadeInUp 0.8s ease-out 0.2s both;
+}
+
+.scroll-animate.animate p {
+    animation: fadeInUp 0.8s ease-out 0.4s both;
 }
 
 .slide-in-left {
