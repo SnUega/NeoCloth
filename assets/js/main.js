@@ -29,7 +29,11 @@ document.addEventListener('DOMContentLoaded', function() {
         // Initialize scroll animations
         initializeScrollAnimations();
         
-
+        // Initialize confirmation modal functionality
+        initializeConfirmationModal();
+        
+        // Initialize active navigation
+        updateActiveNavigation();
         
         // Hide loading spinner
         hideLoadingSpinner();
@@ -81,7 +85,11 @@ function initializeSmoothScrolling() {
                 
                 const target = document.querySelector(href);
                 if (target) {
-                        smoothScrollTo(target, 80); // Account for fixed navbar
+                    smoothScrollTo(target, 80); // Account for fixed navbar
+                    
+                    // Update active navigation immediately
+                    navLinks.forEach(l => l.classList.remove('active'));
+                    this.classList.add('active');
                     
                     // Close mobile menu if open
                     const navMenu = document.querySelector('.nav-menu');
@@ -199,6 +207,60 @@ function scrollToTop() {
     }
 }
 
+// Active navigation tracking
+function updateActiveNavigation() {
+    try {
+        // Map navigation hrefs to section IDs
+        const sectionMap = {
+            '#hero': 'hero',
+            '#catalogs': 'catalogs', 
+            '#about': 'about',
+            '#reviews': 'reviews',
+            '#contact': 'contact'
+        };
+        
+        const navLinks = document.querySelectorAll('.nav-menu a');
+        const scrollPosition = window.scrollY + 100; // Offset for better detection
+        
+        let activeSection = 'hero';
+        
+        // Check each section to determine which one is currently active
+        Object.values(sectionMap).forEach(sectionId => {
+            const section = document.getElementById(sectionId);
+            if (section) {
+                const sectionTop = section.offsetTop;
+                const sectionHeight = section.offsetHeight;
+                const sectionBottom = sectionTop + sectionHeight;
+                
+                // More precise section detection
+                if (scrollPosition >= sectionTop && scrollPosition < sectionBottom) {
+                    activeSection = sectionId;
+                }
+                
+                // Special handling for the last section (contact)
+                if (sectionId === 'contact' && scrollPosition >= sectionTop) {
+                    activeSection = sectionId;
+                }
+            }
+        });
+        
+        // Update navigation links
+        navLinks.forEach(link => {
+            link.classList.remove('active');
+            const href = link.getAttribute('href');
+            if (sectionMap[href] === activeSection) {
+                link.classList.add('active');
+            }
+        });
+        
+        // Debug logging (can be removed later)
+        console.log('Active section:', activeSection, 'Scroll position:', scrollPosition);
+        
+    } catch (error) {
+        console.error('Error updating active navigation:', error);
+    }
+}
+
 // Navbar scroll effect
 function initializeNavbarScroll() {
     try {
@@ -211,42 +273,16 @@ function initializeNavbarScroll() {
                     navbar.classList.remove('scrolled');
                 }
                 
-                // Update active navigation link
-                updateActiveNavLink();
+                // Update active navigation on scroll
+                updateActiveNavigation();
             });
         }
     } catch (error) {
         console.error('Error initializing navbar scroll:', error);
     }
 }
+                
 
-// Update active navigation link based on scroll position
-function updateActiveNavLink() {
-    try {
-        const sections = document.querySelectorAll('section[id]');
-        const navLinks = document.querySelectorAll('.nav-menu a[href^="#"]');
-        
-        let currentSection = '';
-        
-        sections.forEach(section => {
-            const sectionTop = section.offsetTop - 100;
-            const sectionBottom = sectionTop + section.offsetHeight;
-            
-            if (window.scrollY >= sectionTop && window.scrollY < sectionBottom) {
-                currentSection = section.getAttribute('id');
-            }
-        });
-        
-        navLinks.forEach(link => {
-            link.classList.remove('active');
-            if (link.getAttribute('href') === `#${currentSection}`) {
-                link.classList.add('active');
-            }
-        });
-    } catch (error) {
-        console.error('Error updating active nav link:', error);
-    }
-}
 
 // Back to top button
 function initializeBackToTop() {
@@ -741,3 +777,61 @@ window.toggleFaq = toggleFaq;
 window.shareOnSocial = shareOnSocial;
 window.copyToClipboard = copyToClipboard;
 window.acceptCookies = acceptCookies;
+window.startConfirmCountdown = startConfirmCountdown;
+
+// Confirmation modal functionality
+let confirmTimer;
+
+function startConfirmCountdown() {
+    const confirmModal = document.getElementById('confirm-modal');
+    if (!confirmModal) return;
+    
+    // Open confirmation modal
+    confirmModal.setAttribute('aria-hidden', 'false');
+    
+    // 3 seconds progress
+    const duration = 3000;
+    const start = performance.now();
+    cancelAnimationFrame(confirmTimer);
+    
+    (function frame(t) {
+        const elapsed = Math.min(t - start, duration);
+        const p = Math.round((elapsed / duration) * 100);
+        const progressRing = document.getElementById('progress-ring');
+        if (progressRing) {
+            progressRing.style.setProperty('--p', p);
+        }
+        if (elapsed < duration) {
+            confirmTimer = requestAnimationFrame(frame);
+        } else {
+            closeConfirmModal();
+        }
+    })(start);
+}
+
+function closeConfirmModal() {
+    const confirmModal = document.getElementById('confirm-modal');
+    if (confirmModal) {
+        confirmModal.setAttribute('aria-hidden', 'true');
+    }
+}
+
+function initializeConfirmationModal() {
+    // Close confirmation modal by backdrop click
+    const confirmModal = document.getElementById('confirm-modal');
+    if (confirmModal) {
+        confirmModal.addEventListener('click', (e) => {
+            if (e.target.matches('[data-close]')) {
+                closeConfirmModal();
+            }
+        });
+    }
+    
+    // Close confirmation modal by close button
+    const confirmClose = document.getElementById('confirm-close');
+    if (confirmClose) {
+        confirmClose.addEventListener('click', closeConfirmModal);
+    }
+    
+    console.log('Confirmation modal initialized');
+}

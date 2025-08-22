@@ -1,3 +1,31 @@
+// Import submitViaWeb3Forms function
+async function submitViaWeb3Forms(form) {
+    try {
+        const formData = new FormData(form);
+        // Honeypot check (anti-spam)
+        if ((formData.get('botcheck') || '').toString().trim().length > 0) return true;
+        const accessKey = (formData.get('access_key') || '').toString().trim();
+        if (!accessKey) {
+            console.warn('Web3Forms: missing access_key');
+            return true; // do not block UI; still show confirmation
+        }
+        const res = await fetch('https://api.web3forms.com/submit', {
+            method: 'POST',
+            body: formData,
+            headers: { 'Accept': 'application/json' },
+        });
+        return res.ok;
+    } catch (_) { return false; }
+}
+
+// Import startConfirmCountdown function (placeholder - will be defined in main.js)
+function startConfirmCountdown() {
+    // This function will be available from main.js
+    if (window.startConfirmCountdown) {
+        window.startConfirmCountdown();
+    }
+}
+
 // Shopping Cart functionality
 class ShoppingCart {
     constructor() {
@@ -207,16 +235,8 @@ function checkout() {
         return;
     }
 
-    // Here you would typically integrate with a payment processor
-    // For demo purposes, we'll show an alert
-    const total = cart.getTotal();
-    const itemsCount = cart.getItemsCount();
-    
-    alert(`${t('cart.checkout')}\n${t('cart.total')} $${total.toFixed(2)}\n${itemsCount} items`);
-    
-    // Clear cart after "checkout"
-    cart.clear();
-    closeCart();
+    // Open cart checkout modal instead of alert
+    openCartCheckout();
 }
 
 // Add event listeners
@@ -241,8 +261,28 @@ document.addEventListener('DOMContentLoaded', function() {
     document.addEventListener('keydown', function(e) {
         if (e.key === 'Escape') {
             closeCart();
+            closeCartCheckout();
         }
     });
+    
+    // Cart checkout form submit handler
+    const cartCheckoutForm = document.getElementById('cart-checkout-form');
+    if (cartCheckoutForm) {
+        cartCheckoutForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            submitCartOrder();
+        });
+    }
+    
+    // Cart checkout modal close on background click
+    const cartCheckoutModal = document.getElementById('cart-checkout-modal');
+    if (cartCheckoutModal) {
+        cartCheckoutModal.addEventListener('click', function(e) {
+            if (e.target === cartCheckoutModal) {
+                closeCartCheckout();
+            }
+        });
+    }
 });
 
 // Product interaction functions
@@ -264,8 +304,124 @@ function buyNow(productId, productName, productPrice, size = '', color = '') {
     
     // Open checkout directly
     setTimeout(() => {
-        checkout();
+        openCartCheckout();
     }, 500);
+}
+
+// Cart checkout modal functions
+function openCartCheckout() {
+    if (cart.items.length === 0) {
+        alert(t('cart.empty'));
+        return;
+    }
+
+    // Close cart modal first
+    closeCart();
+    
+    // Populate checkout items
+    populateCheckoutItems();
+    
+    // Show checkout modal
+    const modal = document.getElementById('cart-checkout-modal');
+    if (modal) {
+        modal.classList.add('show');
+        document.body.style.overflow = 'hidden';
+    }
+}
+
+function closeCartCheckout() {
+    const modal = document.getElementById('cart-checkout-modal');
+    if (modal) {
+        modal.classList.remove('show');
+        document.body.style.overflow = '';
+    }
+}
+
+function populateCheckoutItems() {
+    const checkoutItems = document.getElementById('checkout-items');
+    const checkoutTotal = document.getElementById('checkout-total-amount');
+    const cartItemsData = document.getElementById('cart-items-data');
+    const cartTotalData = document.getElementById('cart-total-data');
+    
+    if (!checkoutItems || !checkoutTotal || !cartItemsData || !cartTotalData) return;
+    
+    // Clear previous items
+    checkoutItems.innerHTML = '';
+    
+    // Add each cart item to checkout display
+    cart.items.forEach(item => {
+        const itemElement = document.createElement('div');
+        itemElement.className = 'checkout-item';
+        
+        const itemInfo = document.createElement('div');
+        itemInfo.className = 'checkout-item-info';
+        
+        const itemTitle = document.createElement('div');
+        itemTitle.className = 'checkout-item-title';
+        itemTitle.textContent = item.name;
+        
+        const itemDetails = document.createElement('div');
+        itemDetails.className = 'checkout-item-details';
+        const details = [];
+        const size = item.size || 'Standard';
+        const color = item.color || 'Default';
+        details.push(`Size: ${size}`);
+        details.push(`Color: ${color}`);
+        itemDetails.textContent = details.join(', ');
+        
+        const itemPrice = document.createElement('div');
+        itemPrice.className = 'checkout-item-price';
+        itemPrice.textContent = `$${item.price.toFixed(2)}`;
+        
+        itemInfo.appendChild(itemTitle);
+        itemInfo.appendChild(itemDetails);
+        itemElement.appendChild(itemInfo);
+        itemElement.appendChild(itemPrice);
+        checkoutItems.appendChild(itemElement);
+    });
+    
+    // Update total
+    const total = cart.getTotal();
+    checkoutTotal.textContent = `$${total.toFixed(2)}`;
+    
+    // Set hidden form data - format cart items for better readability
+    const formattedItems = cart.items.map(item => {
+        const size = item.size || 'Standard';
+        const color = item.color || 'Default';
+        return `${item.name} - Size: ${size}, Color: ${color} - $${item.price.toFixed(2)}`;
+    }).join('\n');
+    
+    cartItemsData.value = formattedItems;
+    cartTotalData.value = total.toFixed(2);
+}
+
+async function submitCartOrder() {
+    const form = document.getElementById('cart-checkout-form');
+    if (!form) return;
+    
+    // Validate required fields
+    const phone = document.getElementById('checkout-phone').value.trim();
+    const email = document.getElementById('checkout-email').value.trim();
+    
+    if (!phone || !email) {
+        alert('Please fill in phone and email fields.');
+        return;
+    }
+    
+    // Submit via Web3Forms
+    const ok = await submitViaWeb3Forms(form);
+    
+    // Close the checkout modal
+    closeCartCheckout();
+    
+    // Show confirmation modal
+    startConfirmCountdown();
+    
+    // Clear cart after successful submission
+    if (ok) {
+        cart.clear();
+        cart.updateCartDisplay();
+    }
 }
 
 // Export for global access
@@ -275,3 +431,6 @@ window.closeCart = closeCart;
 window.checkout = checkout;
 window.addToCart = addToCart;
 window.buyNow = buyNow;
+window.openCartCheckout = openCartCheckout;
+window.closeCartCheckout = closeCartCheckout;
+window.submitCartOrder = submitCartOrder;

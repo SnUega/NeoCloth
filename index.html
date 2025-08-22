@@ -5,7 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title data-i18n="meta.title">Oversize Clothing - Your Unique Style</title>
     <meta name="description" data-i18n="meta.description" content="Premium oversize clothing: clean designs, exclusive prints, and custom art. Choose your style without compromise.">
-    
+    <link rel="apple-touch-icon" sizes="180x180" href="./assets/images/favicon/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="./assets/images/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="./assets/images/favicon-16x16.png">
+<link rel="manifest" href="./assets/images/site.webmanifest">
     <!-- Preload critical resources -->
     <link rel="preload" href="assets/css/styles.css" as="style">
     <link rel="preload" href="assets/js/main.js" as="script">
@@ -50,6 +53,28 @@
     
     <!-- Font Awesome for icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Google Analytics (GA4) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-XXXXXXXXXX');
+    </script>
+    
+    <!-- Яндекс.Метрика -->
+    <script type="text/javascript" >
+      (function(m,e,t,r,i,k,a){m[i]=m[i]||function(){(m[i].a=m[i].a||[]).push(arguments)};
+      m[i].l=1*new Date();
+      for (var j = 0; j < document.scripts.length; j++) {if (document.scripts[j].src === r) { return; }}
+      k=e.createElement(t),a=e.getElementsByTagName(t)[0],k.async=1,k.src=r,a.parentNode.insertBefore(k,a)})
+      (window, document, "script", "https://mc.yandex.ru/metrika/tag.js", "ym");
+      ym("00000000", "init", {
+        defer: true
+      });
+    </script>
+    <noscript><div><img src="https://mc.yandex.ru/watch/00000000" style="position:absolute; left:-9999px;" alt="" /></div></noscript>
 </head>
 <body>
     <!-- Loading Spinner -->
@@ -493,6 +518,7 @@
             
             <div class="footer-bottom">
                 <p>&copy; 2025 OVERSIZE. <span data-i18n="footer.rights">All rights reserved.</span></p>
+                <a href="./privacy-policy.html" class="footer-privacy" data-i18n="footer.privacy">Privacy Policy</a>
             </div>
         </div>
     </footer>
@@ -517,7 +543,53 @@
             </div>
             <div class="modal-footer">
                 <button class="btn btn-secondary" onclick="closeCart()" data-i18n="cart.continue_shopping">Continue Shopping</button>
-                <button class="btn btn-primary" onclick="checkout()" data-i18n="cart.checkout">Checkout</button>
+                <button class="btn btn-primary" onclick="openCartCheckout()" data-i18n="cart.checkout">Checkout</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Cart Checkout Modal -->
+    <div id="cart-checkout-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 data-i18n="cart.checkout_title">Order Checkout</h3>
+                <button class="modal-close" onclick="closeCartCheckout()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="cart-summary">
+                    <h4 data-i18n="cart.order_summary">Order Summary</h4>
+                    <div id="checkout-items"></div>
+                    <div class="checkout-total">
+                        <strong><span data-i18n="cart.total">Total: </span><span id="checkout-total-amount">$0.00</span></strong>
+                    </div>
+                </div>
+                
+                <form id="cart-checkout-form" novalidate method="POST">
+                    <input type="hidden" name="access_key" value="61e6ccc8-9d1d-4c61-83b0-7290be23fa7b" />
+                    <input type="hidden" name="subject" value="NeoCloth Cart Order" />
+                    <input type="hidden" name="source" value="Neo_OVERSIZE" />
+                    <input type="text" name="botcheck" style="display:none" tabindex="-1" autocomplete="off" aria-hidden="true" />
+                    <input type="hidden" name="cart_items" id="cart-items-data" />
+                    <input type="hidden" name="cart_total" id="cart-total-data" />
+                    
+                    <div class="form-group">
+                        <label data-i18n="cart.phone">Phone:</label>
+                        <input type="tel" name="phone" id="checkout-phone" required maxlength="20">
+                    </div>
+                    <div class="form-group">
+                        <label data-i18n="cart.email">Email:</label>
+                        <input type="email" name="email" id="checkout-email" required maxlength="60">
+                    </div>
+                    
+                    <div class="checkout-message">
+                        <p data-i18n="cart.contact_message">We will contact you shortly to confirm your order and arrange payment.</p>
+                    </div>
+                    
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" onclick="closeCartCheckout()" data-i18n="cart.cancel">Cancel</button>
+                        <button type="submit" class="btn btn-primary" data-i18n="cart.submit_order">Submit Order</button>
+                    </div>
+                </form>
             </div>
         </div>
     </div>
@@ -530,18 +602,23 @@
                 <button class="modal-close" onclick="closeCustomForm()">&times;</button>
             </div>
             <div class="modal-body">
-                <form id="custom-form">
+                <form id="custom-form" novalidate method="POST">
+                    <input type="hidden" name="access_key" value="61e6ccc8-9d1d-4c61-83b0-7290be23fa7b" />
+                    <input type="hidden" name="subject" value="NeoCloth Custom Order" />
+                    <input type="hidden" name="source" value="Neo_OVERSIZE" />
+                    <input type="text" name="botcheck" style="display:none" tabindex="-1" autocomplete="off" aria-hidden="true" />
+                    
                     <div class="form-group">
-                        <label data-i18n="custom.name">Name:</label>
-                        <input type="text" id="custom-name" required>
+                        <label data-i18n="custom.phone">Phone:</label>
+                        <input type="tel" name="phone" id="custom-phone" required maxlength="20">
                     </div>
                     <div class="form-group">
                         <label data-i18n="custom.email">Email:</label>
-                        <input type="email" id="custom-email" required>
+                        <input type="email" name="email" id="custom-email" required maxlength="60">
                     </div>
                     <div class="form-group">
                         <label data-i18n="custom.type">Item Type:</label>
-                        <select id="custom-type" required>
+                        <select name="type" id="custom-type" maxlength="20">
                             <option value="" data-i18n="custom.select_type">Select type</option>
                             <option value="t-shirt" data-i18n="custom.tshirt">T-shirt</option>
                             <option value="hoodie" data-i18n="custom.hoodie">Hoodie</option>
@@ -549,7 +626,7 @@
                     </div>
                     <div class="form-group">
                         <label data-i18n="custom.size">Size:</label>
-                        <select id="custom-size" required>
+                        <select name="size" id="custom-size" maxlength="10">
                             <option value="" data-i18n="custom.select_size">Select size</option>
                             <option value="S">S</option>
                             <option value="M">M</option>
@@ -560,11 +637,11 @@
                     </div>
                     <div class="form-group">
                         <label data-i18n="custom.description">Design Description:</label>
-                        <textarea id="custom-description" rows="4" placeholder="" data-i18n-placeholder="custom.description_placeholder" required></textarea>
+                        <textarea name="description" id="custom-description" rows="4" placeholder="" data-i18n-placeholder="custom.description_placeholder" maxlength="500"></textarea>
                     </div>
                     <div class="form-group">
                         <label data-i18n="custom.budget">Budget Range:</label>
-                        <select id="custom-budget" required>
+                        <select name="budget" id="custom-budget" maxlength="20">
                             <option value="" data-i18n="custom.select_budget">Select budget</option>
                             <option value="50-100">$50-100</option>
                             <option value="100-200">$100-200</option>
@@ -572,11 +649,12 @@
                             <option value="300+">$300+</option>
                         </select>
                     </div>
+                    
+                    <div class="modal-footer">
+                        <button class="btn btn-secondary" onclick="closeCustomForm()" data-i18n="custom.cancel">Cancel</button>
+                        <button type="submit" class="btn btn-primary" data-i18n="custom.submit">Submit Request</button>
+                    </div>
                 </form>
-            </div>
-            <div class="modal-footer">
-                <button class="btn btn-secondary" onclick="closeCustomForm()" data-i18n="custom.cancel">Cancel</button>
-                <button class="btn btn-primary" onclick="submitCustomForm()" data-i18n="custom.submit">Submit Request</button>
             </div>
         </div>
     </div>
@@ -590,6 +668,25 @@
             </div>
             <div class="modal-body">
                 <div id="product-modal-content"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Confirmation Modal -->
+    <div class="modal" id="confirm-modal" aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="confirm-title">
+        <div class="modal-backdrop" data-close></div>
+        <div class="modal-window glass confirm-window">
+            <div class="confirm-content">
+                <h3 id="confirm-title" data-i18n="confirm.title">Thank you!</h3>
+                <p data-i18n="confirm.desc">A manager will contact you within 5–10 minutes.</p>
+                <button class="confirm-close" id="confirm-close" aria-label="Close">
+                    <span class="progress-ring" id="progress-ring"></span>
+                    <span class="confirm-close-label" aria-hidden="true">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M18 6L6 18M6 6l12 12" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                    </span>
+                </button>
             </div>
         </div>
     </div>

@@ -484,34 +484,51 @@ function closeCustomForm() {
     if (form) form.reset();
 }
 
-function submitCustomForm() {
+async function submitCustomForm() {
     const form = document.getElementById('custom-form');
-    const formData = new FormData(form);
     
-    const customOrder = {
-        name: document.getElementById('custom-name').value,
-        email: document.getElementById('custom-email').value,
-        type: document.getElementById('custom-type').value,
-        size: document.getElementById('custom-size').value,
-        description: document.getElementById('custom-description').value,
-        budget: document.getElementById('custom-budget').value,
-        timestamp: new Date().toISOString()
-    };
+    // Validate only required fields (phone and email)
+    const phone = document.getElementById('custom-phone').value.trim();
+    const email = document.getElementById('custom-email').value.trim();
     
-    // Validate form
-    if (!customOrder.name || !customOrder.email || !customOrder.type || 
-        !customOrder.size || !customOrder.description || !customOrder.budget) {
-        alert('Please fill in all fields');
+    if (!phone || !email) {
+        alert('Please fill in phone and email fields');
         return;
     }
     
-    // Here you would typically send to your backend/Google Sheets
-    console.log('Custom order submitted:', customOrder);
+    // Submit via Web3Forms
+    const ok = await submitViaWeb3Forms(form);
     
-    // For demo, show success message
-    alert(`${t('custom.submit')} successful! We'll contact you at ${customOrder.email} within 24 hours.`);
-    
+    // Close the custom form modal
     closeCustomForm();
+    
+    // Show confirmation modal
+    startConfirmCountdown();
+    
+    // Reset form after sending
+    if (ok) { 
+        try { form.reset(); } catch (_) {} 
+    }
+}
+
+// Submit via Web3Forms (no redirects, works locally)
+async function submitViaWeb3Forms(form) {
+    try {
+        const formData = new FormData(form);
+        // Honeypot check (anti-spam)
+        if ((formData.get('botcheck') || '').toString().trim().length > 0) return true;
+        const accessKey = (formData.get('access_key') || '').toString().trim();
+        if (!accessKey) {
+            console.warn('Web3Forms: missing access_key');
+            return true; // do not block UI; still show confirmation
+        }
+        const res = await fetch('https://api.web3forms.com/submit', {
+            method: 'POST',
+            body: formData,
+            headers: { 'Accept': 'application/json' },
+        });
+        return res.ok;
+    } catch (_) { return false; }
 }
 
 // Event listeners
@@ -533,6 +550,15 @@ document.addEventListener('DOMContentLoaded', function() {
             if (e.target === customModal) {
                 closeCustomForm();
             }
+        });
+    }
+    
+    // Custom form submit handler
+    const customForm = document.getElementById('custom-form');
+    if (customForm) {
+        customForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            submitCustomForm();
         });
     }
 });

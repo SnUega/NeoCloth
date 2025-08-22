@@ -192,6 +192,15 @@ section {
     width: 100%;
 }
 
+.nav-menu a.active::after {
+    width: 100%;
+}
+
+.nav-menu a.active {
+    color: #333;
+    font-weight: 600;
+}
+
 .nav-actions {
     display: flex;
     align-items: center;
@@ -1474,6 +1483,28 @@ a[href^="#"]:hover {
     padding-top: 1rem;
     text-align: center;
     color: #ccc;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+}
+
+.footer-privacy {
+    color: #333;
+    text-decoration: none;
+    font-weight: 500;
+    padding: 0.5rem 1rem;
+    border: 1px solid #333;
+    border-radius: 20px;
+    transition: all 0.3s ease;
+    font-size: 0.9rem;
+}
+
+.footer-privacy:hover {
+    background: #333;
+    color: white;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(51, 51, 51, 0.3);
 }
 
 /* Back to Top Button */
@@ -1628,6 +1659,13 @@ a[href^="#"]:hover {
     background: #f8f9fa;
 }
 
+/* Modal footer inside form */
+.modal-body .modal-footer {
+    border-top: 1px solid #eee;
+    margin-top: 1.5rem;
+    padding-top: 1.5rem;
+}
+
 /* Form Styles */
 .form-group {
     margin-bottom: 1.5rem;
@@ -1761,6 +1799,81 @@ a[href^="#"]:hover {
 .cart-total:hover {
     transform: translateY(-2px);
     color: #333;
+}
+
+/* Cart Checkout Modal Styles */
+.cart-summary {
+    margin-bottom: 2rem;
+    padding: 1.5rem;
+    background: #f8f9fa;
+    border-radius: 10px;
+    border: 1px solid #e9ecef;
+}
+
+.cart-summary h4 {
+    margin-bottom: 1rem;
+    color: #333;
+    font-size: 1.2rem;
+    font-weight: 600;
+}
+
+#checkout-items {
+    margin-bottom: 1rem;
+}
+
+.checkout-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.75rem 0;
+    border-bottom: 1px solid #e9ecef;
+}
+
+.checkout-item:last-child {
+    border-bottom: none;
+}
+
+.checkout-item-info {
+    flex: 1;
+}
+
+.checkout-item-title {
+    font-weight: 600;
+    color: #333;
+    margin-bottom: 0.25rem;
+}
+
+.checkout-item-details {
+    font-size: 0.9rem;
+    color: #666;
+}
+
+.checkout-item-price {
+    font-weight: 600;
+    color: #333;
+}
+
+.checkout-total {
+    margin-top: 1rem;
+    padding-top: 1rem;
+    border-top: 2px solid #333;
+    text-align: right;
+    font-size: 1.1rem;
+}
+
+.checkout-message {
+    margin: 1.5rem 0;
+    padding: 1rem;
+    background: #e3f2fd;
+    border-radius: 8px;
+    border-left: 4px solid #2196f3;
+}
+
+.checkout-message p {
+    margin: 0;
+    color: #1565c0;
+    font-size: 0.95rem;
+    line-height: 1.5;
 }
 
 /* Responsive Design */
@@ -2115,4 +2228,102 @@ a[href^="#"]:hover {
         object-fit: cover;
         object-position: center;
     }
+}
+
+/* New modal system styles */
+.modal[aria-hidden="true"] {
+    display: none;
+}
+
+.modal[aria-hidden="false"] {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.modal-backdrop {
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.5);
+}
+
+.modal-window {
+    position: relative;
+    background: white;
+    border-radius: 20px;
+    padding: 30px;
+    max-width: 500px;
+    width: 90%;
+    max-height: 90vh;
+    overflow-y: auto;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+}
+
+.modal-window.glass {
+    background: rgba(255, 255, 255, 0.95);
+    -webkit-backdrop-filter: blur(20px);
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+/* Confirmation modal styles */
+.confirm-window {
+    padding: 30px;
+    display: grid;
+    place-items: center;
+}
+
+.confirm-content {
+    display: grid;
+    gap: 20px;
+    place-items: center;
+    text-align: center;
+}
+
+.confirm-content h3 {
+    font-size: 28px;
+    font-weight: 600;
+    color: #333;
+    margin: 0;
+}
+
+.confirm-content p {
+    font-size: 16px;
+    color: #666;
+    margin: 0;
+    max-width: 300px;
+}
+
+.confirm-close {
+    position: relative;
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    border: none;
+    background: inherit;
+    display: grid;
+    place-items: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.confirm-close:hover {
+    transform: scale(1.05);
+}
+
+.confirm-close .confirm-close-label {
+    position: absolute;
+    color: #333;
+}
+
+.progress-ring {
+    position: absolute;
+    inset: 16px;
+    border-radius: 50%;
+    padding: 6px;
+    background:
+        radial-gradient(closest-side, rgba(0, 0, 0, 0) 80%, transparent 81%),
+        conic-gradient(#333333 0 calc(var(--p, 0) * 1%), #333333 calc(var(--p, 0) * 1%), rgba(255, 255, 255, 0.12) 0);
+    -webkit-mask: radial-gradient(closest-side, transparent calc(100% - 8px), black calc(100% - 8px));
+    mask: radial-gradient(closest-side, transparent calc(100% - 8px), black calc(100% - 8px));
 }
