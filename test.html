@@ -38,7 +38,7 @@
         <script>
             try {
                 document.getElementById('js-test').innerHTML = '<span class="success">✓ JavaScript is working</span>';
-                console.log('JavaScript test passed');
+
             } catch (error) {
                 document.getElementById('js-test').innerHTML = '<span class="error">✗ JavaScript error: ' + error.message + '</span>';
                 console.error('JavaScript test failed:', error);

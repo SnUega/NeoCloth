@@ -25,7 +25,7 @@ class ProductManager {
             try {
                 await this.loadFromGoogleSheets();
             } catch (error) {
-                console.warn('Could not load from Google Sheets:', error);
+                // Could not load from Google Sheets
             }
         }
     }
@@ -515,20 +515,83 @@ async function submitCustomForm() {
 async function submitViaWeb3Forms(form) {
     try {
         const formData = new FormData(form);
+        
         // Honeypot check (anti-spam)
         if ((formData.get('botcheck') || '').toString().trim().length > 0) return true;
-        const accessKey = (formData.get('access_key') || '').toString().trim();
-        if (!accessKey) {
-            console.warn('Web3Forms: missing access_key');
-            return true; // do not block UI; still show confirmation
-        }
+        
+        // Set the correct access key for Web3Forms
+        formData.set('access_key', '61e6ccc8-9d1d-4c61-83b0-7290be23fa7b');
+        
+        // Add source information
+        formData.set('source', 'Neo_OVERSIZE');
+        
         const res = await fetch('https://api.web3forms.com/submit', {
             method: 'POST',
             body: formData,
             headers: { 'Accept': 'application/json' },
         });
+        
         return res.ok;
-    } catch (_) { return false; }
+    } catch (error) {
+        console.error('Error submitting form:', error);
+        return false;
+    }
+}
+
+function submitCustomOrder(event) {
+    try {
+        event.preventDefault();
+        
+        const form = event.target;
+        const formData = new FormData(form);
+        
+        // Add source information
+        formData.set('source', 'Neo_OVERSIZE');
+        formData.set('subject', 'NeoCloth Custom Order');
+        
+        // Add timestamp
+        formData.set('order_date', new Date().toISOString());
+        
+        // Format custom order data
+        const customOrder = {
+            name: formData.get('name') || 'Not provided',
+            email: formData.get('email') || 'Not provided',
+            phone: formData.get('phone') || 'Not provided',
+            productType: formData.get('productType') || 'Not specified',
+            description: formData.get('description') || 'No description',
+            budget: formData.get('budget') || 'Not specified',
+            timeline: formData.get('timeline') || 'Not specified',
+            additionalInfo: formData.get('additionalInfo') || 'None'
+        };
+        
+        // Add formatted order data to form
+        const orderDetails = `Custom Order Details:\nProduct Type: ${customOrder.productType}\nDescription: ${customOrder.description}\nBudget: ${customOrder.budget}\nTimeline: ${customOrder.timeline}\nAdditional Info: ${customOrder.additionalInfo}`;
+        formData.set('order_details', orderDetails);
+        
+        // Submit via Web3Forms
+        submitViaWeb3Forms(form).then(success => {
+            if (success) {
+                // Reset form
+                try { form.reset(); } catch (_) {}
+                
+                // Close modal
+                const modal = document.getElementById('customOrderModal');
+                if (modal) {
+                    modal.classList.remove('show');
+                    document.body.classList.remove('modal-open');
+                }
+                
+                // Show success message
+                alert('Your custom order has been submitted successfully! We will contact you soon.');
+            } else {
+                alert('There was an error submitting your order. Please try again.');
+            }
+        });
+        
+    } catch (error) {
+        console.error('Error submitting custom order:', error);
+        alert('There was an error submitting your order. Please try again.');
+    }
 }
 
 // Event listeners

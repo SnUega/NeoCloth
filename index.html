@@ -14,7 +14,7 @@
     <link rel="preload" href="assets/js/main.js" as="script">
     
     <!-- Stylesheets -->
-    <link rel="stylesheet" href="assets/css/styles.css?v=2">
+    <link rel="stylesheet" href="assets/css/styles.css?v=3">
     
     <!-- Fallback styles for when JavaScript fails -->
     <style>
@@ -55,12 +55,12 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <!-- Google Analytics (GA4) -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"></script>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-27M4FNB1YS"></script>
     <script>
       window.dataLayer = window.dataLayer || [];
       function gtag(){dataLayer.push(arguments);}
       gtag('js', new Date());
-      gtag('config', 'G-XXXXXXXXXX');
+      gtag('config', 'G-27M4FNB1YS');
     </script>
     
     <!-- Яндекс.Метрика -->
@@ -96,7 +96,8 @@
     <nav class="navbar" id="navbar">
         <div class="nav-container">
             <div class="nav-logo">
-                <h2 data-i18n="brand.name">OVERSIZE</h2>
+                <img src="assets/images/logo.png" alt="OVERSIZE Logo" class="desktop-logo">
+                <img src="assets/images/logo-mobile.png" alt="OVERSIZE Logo" class="mobile-logo">
             </div>
             
             <div class="nav-menu">
@@ -127,6 +128,37 @@
                     <span></span>
                     <span></span>
                 </button>
+            </div>
+        </div>
+        
+        <!-- Mobile Navigation Menu -->
+        <div class="mobile-nav" id="mobile-nav">
+            <div class="mobile-nav-header">
+                            <div class="mobile-logo-placeholder">
+                <img src="assets/images/logo.png" alt="OVERSIZE Logo" class="mobile-menu-logo">
+            </div>
+            </div>
+            
+            <nav class="mobile-nav-menu">
+                <a href="#hero" data-i18n="nav.home">Home</a>
+                <a href="#catalogs" data-i18n="nav.catalog">Catalog</a>
+                <a href="#about" data-i18n="nav.about">About</a>
+                <a href="#reviews" data-i18n="nav.reviews">Reviews</a>
+                <a href="#contact" data-i18n="nav.contact">Contact</a>
+            </nav>
+            
+            <div class="mobile-nav-footer">
+                <div class="mobile-contact">
+                    <p><i class="fas fa-envelope"></i> info@oversize.com</p>
+                    <p><i class="fas fa-phone"></i> +1 (555) 123-4567</p>
+                </div>
+                <div class="mobile-social">
+                    <a href="#"><i class="fab fa-instagram"></i></a>
+                    <a href="#"><i class="fab fa-telegram"></i></a>
+                    <a href="#"><i class="fab fa-whatsapp"></i></a>
+                </div>
+            </div>
+        </div>
             </div>
         </div>
     </nav>
@@ -490,7 +522,7 @@
         <div class="container">
             <div class="footer-content">
                 <div class="footer-section">
-                    <h3 data-i18n="brand.name">OVERSIZE</h3>
+                    <img src="assets/images/logo.png" alt="OVERSIZE Logo" class="footer-logo">
                     <p data-i18n="footer.description">Premium oversize clothing for unique style and maximum comfort.</p>
                 </div>
                 
@@ -506,8 +538,8 @@
                 
                 <div class="footer-section">
                     <h4 data-i18n="footer.contact">Contact</h4>
-                    <p>Email: info@oversize.com</p>
-                    <p>Phone: +1 (555) 123-4567</p>
+                    <p>Email: neoversize@gmail.com</p>
+                    <p>Phone: +373 605 04 199</p>
                     <div class="social-links">
                         <a href="#"><i class="fab fa-instagram"></i></a>
                         <a href="#"><i class="fab fa-telegram"></i></a>
@@ -571,6 +603,8 @@
                     <input type="text" name="botcheck" style="display:none" tabindex="-1" autocomplete="off" aria-hidden="true" />
                     <input type="hidden" name="cart_items" id="cart-items-data" />
                     <input type="hidden" name="cart_total" id="cart-total-data" />
+                    <input type="hidden" name="order_summary" id="order-summary-data" />
+                    <input type="hidden" name="order_date" id="order-date-data" />
                     
                     <div class="form-group">
                         <label data-i18n="cart.phone">Phone:</label>
@@ -692,9 +726,10 @@
     </div>
 
     <!-- Scripts -->
-    <script src="assets/js/translations.js?v=2"></script>
-    <script src="assets/js/cart.js?v=2"></script>
-    <script src="assets/js/products.js?v=2"></script>
-    <script src="assets/js/main.js?v=2"></script>
+    <script src="assets/js/translations.js?v=3" defer></script>
+    <script src="assets/js/cart.js?v=3" defer></script>
+    <script src="assets/js/products.js?v=3" defer></script>
+    <script src="assets/js/main.js?v=3" defer></script>
+    <script src="assets/js/form-security.js"></script>
 </body>
 </html>

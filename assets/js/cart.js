@@ -2,20 +2,41 @@
 async function submitViaWeb3Forms(form) {
     try {
         const formData = new FormData(form);
+        
         // Honeypot check (anti-spam)
         if ((formData.get('botcheck') || '').toString().trim().length > 0) return true;
-        const accessKey = (formData.get('access_key') || '').toString().trim();
-        if (!accessKey) {
-            console.warn('Web3Forms: missing access_key');
-            return true; // do not block UI; still show confirmation
+        
+        // Set the correct access key for Web3Forms
+        formData.set('access_key', '61e6ccc8-9d1d-4c61-83b0-7290be23fa7b');
+        
+        // Add source information
+        formData.set('source', 'Neo_OVERSIZE');
+        
+        // For cart orders, ensure we have all required cart data
+        if (form.id === 'cart-checkout-form') {
+            // Ensure cart items data is properly formatted
+            const cartItems = cart.items.map(item => {
+                const size = item.size || 'Standard';
+                const color = item.color || 'Default';
+                return `${item.name} - Size: ${size}, Color: ${color} - $${item.price.toFixed(2)}`;
+            }).join('\n');
+            
+            formData.set('cart_items', cartItems);
+            formData.set('cart_total', cart.getTotal().toFixed(2));
+            formData.set('subject', 'NeoCloth Cart Order');
         }
+        
         const res = await fetch('https://api.web3forms.com/submit', {
             method: 'POST',
             body: formData,
             headers: { 'Accept': 'application/json' },
         });
+        
         return res.ok;
-    } catch (_) { return false; }
+    } catch (error) {
+        console.error('Error submitting form:', error);
+        return false;
+    }
 }
 
 // Import startConfirmCountdown function (placeholder - will be defined in main.js)
@@ -54,7 +75,6 @@ class ShoppingCart {
 
         this.saveToStorage();
         this.updateCartDisplay();
-        this.showAddedNotification(product);
     }
 
     // Remove item from cart
@@ -342,8 +362,10 @@ function populateCheckoutItems() {
     const checkoutTotal = document.getElementById('checkout-total-amount');
     const cartItemsData = document.getElementById('cart-items-data');
     const cartTotalData = document.getElementById('cart-total-data');
+    const orderSummaryData = document.getElementById('order-summary-data');
+    const orderDateData = document.getElementById('order-date-data');
     
-    if (!checkoutItems || !checkoutTotal || !cartItemsData || !cartTotalData) return;
+    if (!checkoutItems || !checkoutTotal || !cartItemsData || !cartTotalData || !orderSummaryData || !orderDateData) return;
     
     // Clear previous items
     checkoutItems.innerHTML = '';
@@ -384,15 +406,24 @@ function populateCheckoutItems() {
     const total = cart.getTotal();
     checkoutTotal.textContent = `$${total.toFixed(2)}`;
     
-    // Set hidden form data - format cart items for better readability
+    // Set hidden form data with detailed cart information
     const formattedItems = cart.items.map(item => {
         const size = item.size || 'Standard';
         const color = item.color || 'Default';
-        return `${item.name} - Size: ${size}, Color: ${color} - $${item.price.toFixed(2)}`;
-    }).join('\n');
+        const quantity = item.quantity || 1;
+        const itemTotal = (item.price * quantity).toFixed(2);
+        return `Product: ${item.name}\nSize: ${size}\nColor: ${color}\nPrice: $${item.price.toFixed(2)}\nQuantity: ${quantity}\nItem Total: $${itemTotal}`;
+    }).join('\n\n');
     
     cartItemsData.value = formattedItems;
     cartTotalData.value = total.toFixed(2);
+    
+    // Set order summary
+    const orderSummary = `Order Summary:\nTotal Items: ${cart.getItemsCount()}\nTotal Amount: $${total.toFixed(2)}\nSource: Neo_OVERSIZE`;
+    orderSummaryData.value = orderSummary;
+    
+    // Set order date
+    orderDateData.value = new Date().toISOString();
 }
 
 async function submitCartOrder() {
@@ -407,6 +438,20 @@ async function submitCartOrder() {
         alert('Please fill in phone and email fields.');
         return;
     }
+    
+    // Add additional order information to form
+    const formData = new FormData(form);
+    
+    // Add customer contact info
+    formData.set('customer_phone', phone);
+    formData.set('customer_email', email);
+    
+    // Add order summary
+    const orderSummary = `Order Summary:\nTotal Items: ${cart.getItemsCount()}\nTotal Amount: $${cart.getTotal().toFixed(2)}\nSource: Neo_OVERSIZE`;
+    formData.set('order_summary', orderSummary);
+    
+    // Add timestamp
+    formData.set('order_date', new Date().toISOString());
     
     // Submit via Web3Forms
     const ok = await submitViaWeb3Forms(form);

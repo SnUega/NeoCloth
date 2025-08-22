@@ -1,7 +1,7 @@
 // Main JavaScript functionality
 document.addEventListener('DOMContentLoaded', function() {
     try {
-        console.log('DOM loaded, initializing...');
+        
         
         // Initialize language
         if (typeof initializeLanguage === 'function') {
@@ -38,7 +38,7 @@ document.addEventListener('DOMContentLoaded', function() {
         // Hide loading spinner
         hideLoadingSpinner();
         
-        console.log('Landing page initialized successfully');
+
     } catch (error) {
         console.error('Error during initialization:', error);
         // Ensure content is visible even if JS fails
@@ -92,10 +92,10 @@ function initializeSmoothScrolling() {
                     this.classList.add('active');
                     
                     // Close mobile menu if open
-                    const navMenu = document.querySelector('.nav-menu');
+                    const mobileNav = document.getElementById('mobile-nav');
                     const mobileMenuToggle = document.getElementById('mobile-menu-toggle');
-                    if (navMenu && navMenu.classList.contains('active')) {
-                        navMenu.classList.remove('active');
+                    if (mobileNav && mobileNav.classList.contains('active')) {
+                        mobileNav.classList.remove('active');
                         if (mobileMenuToggle) {
                             mobileMenuToggle.classList.remove('active');
                         }
@@ -105,10 +105,47 @@ function initializeSmoothScrolling() {
             });
         });
         
+        // Smooth scroll for mobile navigation links
+        const mobileNavLinks = document.querySelectorAll('.mobile-nav-menu a[href^="#"]');
+        
+        mobileNavLinks.forEach(link => {
+            link.addEventListener('click', function (e) {
+                e.preventDefault();
+                const href = this.getAttribute('href');
+                
+                const target = document.querySelector(href);
+                if (target) {
+                    smoothScrollTo(target, 80); // Account for fixed navbar
+                    
+                    // Close mobile menu
+                    const mobileNav = document.getElementById('mobile-nav');
+                    const mobileMenuToggle = document.getElementById('mobile-menu-toggle');
+                    if (mobileNav && mobileMenuToggle) {
+                        mobileNav.classList.remove('active');
+                        mobileMenuToggle.classList.remove('active');
+                        document.body.classList.remove('menu-open');
+                    }
+                }
+            });
+        });
+        
         // Handle logo click (scroll to top/hero)
-        const logo = document.querySelector('.nav-logo h2');
+        const logo = document.querySelector('.nav-logo .desktop-logo');
         if (logo) {
             logo.addEventListener('click', function() {
+                const heroSection = document.getElementById('hero');
+                if (heroSection) {
+                    smoothScrollTo(heroSection, 80);
+                } else {
+                    smoothScrollTo(document.body, 0);
+                }
+            });
+        }
+        
+        // Handle mobile logo click (scroll to top/hero)
+        const mobileLogo = document.querySelector('.nav-logo .mobile-logo');
+        if (mobileLogo) {
+            mobileLogo.addEventListener('click', function() {
                 const heroSection = document.getElementById('hero');
                 if (heroSection) {
                     smoothScrollTo(heroSection, 80);
@@ -207,9 +244,22 @@ function scrollToTop() {
     }
 }
 
-// Active navigation tracking
+// Cache for section dimensions to avoid recalculation
+let sectionDimensionsCache = null;
+let lastScrollPosition = 0;
+
+// Active navigation tracking with debouncing and caching
 function updateActiveNavigation() {
     try {
+        const currentScrollPosition = window.scrollY;
+        
+        // Only update if scroll position changed significantly (more than 50px)
+        if (Math.abs(currentScrollPosition - lastScrollPosition) < 50) {
+            return;
+        }
+        
+        lastScrollPosition = currentScrollPosition;
+        
         // Map navigation hrefs to section IDs
         const sectionMap = {
             '#hero': 'hero',
@@ -220,46 +270,63 @@ function updateActiveNavigation() {
         };
         
         const navLinks = document.querySelectorAll('.nav-menu a');
-        const scrollPosition = window.scrollY + 100; // Offset for better detection
+        const scrollPosition = currentScrollPosition + 100; // Offset for better detection
         
-        let activeSection = 'hero';
+        // Cache section dimensions (only recalculate if cache is invalid)
+        if (!sectionDimensionsCache) {
+            sectionDimensionsCache = [];
+            Object.values(sectionMap).forEach(sectionId => {
+                const section = document.getElementById(sectionId);
+                if (section) {
+                    sectionDimensionsCache.push({
+                        id: sectionId,
+                        top: section.offsetTop,
+                        bottom: section.offsetTop + section.offsetHeight
+                    });
+                }
+            });
+            
+            // Sort by top position
+            sectionDimensionsCache.sort((a, b) => a.top - b.top);
+        }
         
-        // Check each section to determine which one is currently active
-        Object.values(sectionMap).forEach(sectionId => {
-            const section = document.getElementById(sectionId);
-            if (section) {
-                const sectionTop = section.offsetTop;
-                const sectionHeight = section.offsetHeight;
-                const sectionBottom = sectionTop + sectionHeight;
-                
-                // More precise section detection
-                if (scrollPosition >= sectionTop && scrollPosition < sectionBottom) {
-                    activeSection = sectionId;
-                }
-                
-                // Special handling for the last section (contact)
-                if (sectionId === 'contact' && scrollPosition >= sectionTop) {
-                    activeSection = sectionId;
-                }
+        // Find the active section by checking from bottom to top
+        let activeSection = null;
+        for (let i = sectionDimensionsCache.length - 1; i >= 0; i--) {
+            const section = sectionDimensionsCache[i];
+            if (scrollPosition >= section.top) {
+                activeSection = section.id;
+                break;
             }
-        });
+        }
+        
+        // If no section found, default to hero
+        if (!activeSection) {
+            activeSection = 'hero';
+        }
         
         // Update navigation links
         navLinks.forEach(link => {
             link.classList.remove('active');
             const href = link.getAttribute('href');
-            if (sectionMap[href] === activeSection) {
+            const isActive = sectionMap[href] === activeSection;
+            if (isActive) {
                 link.classList.add('active');
             }
         });
-        
-        // Debug logging (can be removed later)
-        console.log('Active section:', activeSection, 'Scroll position:', scrollPosition);
         
     } catch (error) {
         console.error('Error updating active navigation:', error);
     }
 }
+
+// Function to invalidate cache (call this when page content changes)
+function invalidateSectionCache() {
+    sectionDimensionsCache = null;
+}
+
+// Invalidate cache on window resize
+window.addEventListener('resize', invalidateSectionCache);
 
 // Navbar scroll effect
 function initializeNavbarScroll() {
@@ -329,7 +396,7 @@ function initializeBackToTop() {
 function initializeFAQ() {
     try {
         // FAQ items are handled by the toggleFaq function
-        console.log('FAQ functionality initialized');
+
     } catch (error) {
         console.error('Error initializing FAQ:', error);
     }
@@ -360,22 +427,40 @@ function toggleFaq(button) {
 function initializeMobileMenu() {
     try {
         const mobileMenuToggle = document.getElementById('mobile-menu-toggle');
-        const navMenu = document.querySelector('.nav-menu');
+        const mobileNav = document.getElementById('mobile-nav');
         
-        if (mobileMenuToggle && navMenu) {
+        if (mobileMenuToggle && mobileNav) {
             mobileMenuToggle.addEventListener('click', function() {
-                navMenu.classList.toggle('active');
+                mobileNav.classList.toggle('active');
                 mobileMenuToggle.classList.toggle('active');
                 document.body.classList.toggle('menu-open');
             });
             
             // Close menu when clicking on a link
-            navMenu.querySelectorAll('a').forEach(link => {
+            mobileNav.querySelectorAll('a').forEach(link => {
                 link.addEventListener('click', function() {
-                    navMenu.classList.remove('active');
+                    mobileNav.classList.remove('active');
                     mobileMenuToggle.classList.remove('active');
                     document.body.classList.remove('menu-open');
                 });
+            });
+            
+            // Close menu when clicking outside
+            document.addEventListener('click', function(e) {
+                if (!mobileMenuToggle.contains(e.target) && !mobileNav.contains(e.target)) {
+                    mobileNav.classList.remove('active');
+                    mobileMenuToggle.classList.remove('active');
+                    document.body.classList.remove('menu-open');
+                }
+            });
+            
+            // Close menu with Escape key
+            document.addEventListener('keydown', function(e) {
+                if (e.key === 'Escape' && mobileNav.classList.contains('active')) {
+                    mobileNav.classList.remove('active');
+                    mobileMenuToggle.classList.remove('active');
+                    document.body.classList.remove('menu-open');
+                }
             });
         }
     } catch (error) {
@@ -406,7 +491,7 @@ function initializeScrollAnimations() {
     try {
         // Check if IntersectionObserver is supported
         if (!('IntersectionObserver' in window)) {
-            console.log('IntersectionObserver not supported, skipping scroll animations');
+    
             return;
         }
         
@@ -493,7 +578,7 @@ function validateForm(formElement) {
 // Fallback initialization - ensure basic functionality works
 window.addEventListener('load', function() {
     try {
-        console.log('Window loaded, running fallback initialization...');
+
         
         // Hide loading spinner if it's still visible
         const spinner = document.getElementById('loading-spinner');
@@ -527,7 +612,7 @@ window.addEventListener('load', function() {
             });
         });
         
-        console.log('Fallback initialization completed');
+
     } catch (error) {
         console.error('Error in fallback initialization:', error);
         // Last resort - force content visibility
@@ -764,7 +849,7 @@ function initializeLanguageSwitcher() {
                 }
             });
         });
-        console.log('Language switcher initialized');
+
     } catch (error) {
         console.error('Error initializing language switcher:', error);
     }
@@ -833,5 +918,5 @@ function initializeConfirmationModal() {
         confirmClose.addEventListener('click', closeConfirmModal);
     }
     
-    console.log('Confirmation modal initialized');
+    
 }

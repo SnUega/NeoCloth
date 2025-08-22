@@ -145,18 +145,19 @@ section {
     height: 70px;
 }
 
-.nav-logo h2 {
-    font-weight: 700;
-    font-size: 1.5rem;
-    color: #333;
-    letter-spacing: -0.5px;
+.nav-logo .desktop-logo {
+    height: 40px;
+    width: auto;
     transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
     cursor: pointer;
 }
 
-.nav-logo h2:hover {
+.nav-logo .desktop-logo:hover {
     transform: scale(1.05);
-    color: #555;
+}
+
+.nav-logo .mobile-logo {
+    display: none; /* Скрыт на десктопе */
 }
 
 .nav-menu {
@@ -283,7 +284,7 @@ section {
 
 /* Mobile Menu Toggle */
 .mobile-menu-toggle {
-    display: none;
+    display: none; /* Скрыто на десктопе */
     flex-direction: column;
     gap: 4px;
     background: none;
@@ -291,6 +292,11 @@ section {
     cursor: pointer;
     padding: 5px;
     transition: all 0.3s ease;
+}
+
+/* Mobile Navigation - скрыто на десктопе */
+.mobile-nav {
+    display: none; /* Скрыто на десктопе */
 }
 
 .mobile-menu-toggle:hover {
@@ -303,6 +309,19 @@ section {
     background: #333;
     border-radius: 2px;
     transition: all 0.3s ease;
+    transform-origin: center;
+}
+
+.mobile-menu-toggle.active span:nth-child(1) {
+    transform: rotate(45deg) translate(5px, 5px);
+}
+
+.mobile-menu-toggle.active span:nth-child(2) {
+    opacity: 0;
+}
+
+.mobile-menu-toggle.active span:nth-child(3) {
+    transform: rotate(-45deg) translate(5px, -5px);
 }
 
 /* Hero Section */
@@ -1432,7 +1451,13 @@ a[href^="#"]:hover {
     margin-bottom: 2rem;
 }
 
-.footer-section h3,
+.footer-section .footer-logo {
+    height: 35px;
+    width: auto;
+    margin-bottom: 1rem;
+    filter: brightness(0) invert(1); /* Делаем логотип белым */
+}
+
 .footer-section h4 {
     margin-bottom: 1rem;
     color: #fff;
@@ -1466,6 +1491,12 @@ a[href^="#"]:hover {
     display: flex;
     gap: 1rem;
     margin-top: 1rem;
+}
+
+@media (max-width: 768px) {
+    .social-links {
+        justify-content: center;
+    }
 }
 
 .social-links a {
@@ -1912,11 +1943,144 @@ a[href^="#"]:hover {
 
 @media (max-width: 768px) {
     .nav-menu {
-        display: none;
+        display: none !important; /* Полностью скрываем старое меню */
     }
     
     .mobile-menu-toggle {
+        display: flex; /* Показываем кнопку бургера на мобильных */
+    }
+    
+    /* Мобильный логотип в header */
+    .nav-logo .desktop-logo {
+        display: none;
+    }
+    
+    .nav-logo .mobile-logo {
+        display: block;
+        height: 35px;
+        width: auto;
+    }
+    
+    body.menu-open {
+        overflow: hidden;
+    }
+    
+    /* Mobile Navigation */
+    .mobile-nav {
+        position: fixed;
+        top: 70px; /* Под header (navbar height) */
+        left: 0;
+        right: 0;
+        background: rgba(255, 255, 255, 0.98);
+        backdrop-filter: blur(20px);
+        -webkit-backdrop-filter: blur(20px);
+        z-index: 999;
+        padding: 2rem;
+        transform: translateY(-100%);
+        opacity: 0;
+        visibility: hidden;
+        transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+        border-bottom: 1px solid #eee;
+        max-height: calc(100vh - 70px);
+        overflow-y: auto;
+        display: block; /* Показываем на мобильных */
+    }
+    
+    .mobile-nav.active {
+        transform: translateY(0);
+        opacity: 1;
+        visibility: visible;
+    }
+    
+    .mobile-logo-placeholder {
+        padding: 1rem 2rem;
+        display: inline-block;
+        margin-bottom: 2rem;
+        text-align: center;
+        width: 100%;
+    }
+    
+    .mobile-menu-logo {
+        height: 40px;
+        width: auto;
+    }
+    
+    .mobile-nav-menu {
         display: flex;
+        flex-direction: column;
+        gap: 0;
+        margin-bottom: 2rem;
+    }
+    
+    .mobile-nav-menu a {
+        display: block;
+        padding: 1.2rem 0;
+        text-decoration: none;
+        color: #333;
+        font-size: 1.1rem;
+        font-weight: 600;
+        text-align: center;
+        border-bottom: 1px solid #eee;
+        transition: all 0.3s ease;
+    }
+    
+    .mobile-nav-menu a:hover {
+        background: #f8f9fa;
+        color: #000;
+        transform: translateX(10px);
+    }
+    
+    .mobile-nav-menu a:last-child {
+        border-bottom: none;
+    }
+    
+    .mobile-nav-footer {
+        text-align: center;
+        padding-top: 1rem;
+        border-top: 1px solid #eee;
+    }
+    
+    .mobile-contact {
+        margin-bottom: 2rem;
+    }
+    
+    .mobile-contact p {
+        margin: 0.8rem 0;
+        color: #666;
+        font-size: 1rem;
+    }
+    
+    .mobile-contact i {
+        margin-right: 0.5rem;
+        color: #333;
+        width: 20px;
+    }
+    
+    .mobile-social {
+        display: flex;
+        justify-content: center;
+        gap: 1.5rem;
+    }
+    
+    .mobile-social a {
+        display: inline-block;
+        width: 50px;
+        height: 50px;
+        background: #333;
+        color: white;
+        border-radius: 50%;
+        text-align: center;
+        line-height: 50px;
+        font-size: 1.2rem;
+        transition: all 0.3s ease;
+        text-decoration: none;
+    }
+    
+    .mobile-social a:hover {
+        background: #555;
+        transform: translateY(-3px);
+        box-shadow: 0 5px 15px rgba(0,0,0,0.2);
     }
     
     .hero {
